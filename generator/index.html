@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Nmap CLI Generator — Professional Edition</title>
+
+  <style>
+    :root {
+      --bg-dark: #0a0f14;
+      --bg-card: #12181f;
+      --accent: #8b5cf6;
+      --accent-hover: #a78bfa;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --border: rgba(255, 255, 255, 0.08);
+      --glass: rgba(255, 255, 255, 0.03);
+      --radius: 12px;
+      --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    
+    html, body { 
+      margin: 0; 
+      background-color: var(--bg-dark); 
+      background-image: radial-gradient(circle at 50% 0%, #1e1b4b 0%, var(--bg-dark) 70%);
+      color: var(--text-main); 
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container { max-width: 1200px; margin: 40px auto; padding: 0 24px; }
+
+    header { 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand h1 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.5px; background: linear-gradient(90deg, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .brand p { margin: 4px 0 0; color: var(--text-muted); font-size: 14px; }
+
+    .header-actions { display: flex; gap: 12px; }
+
+    .btn { 
+      padding: 10px 18px; 
+      border-radius: 8px; 
+      font-size: 14px; 
+      font-weight: 600; 
+      cursor: pointer; 
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary { background: var(--accent); color: white; border-color: var(--accent); }
+    .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3); }
+    
+    .btn-secondary { background: var(--glass); color: var(--text-main); border-color: var(--border); }
+    .btn-secondary:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.2); }
+
+    .grid { display: grid; grid-template-columns: 1fr 380px; gap: 24px; }
+    @media (max-width: 1024px) { .grid { grid-template-columns: 1fr; } }
+
+    .card { 
+      background: var(--bg-card); 
+      border: 1px solid var(--border); 
+      border-radius: var(--radius); 
+      padding: 24px;
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3);
+    }
+
+    .section { margin-bottom: 32px; }
+    .section:last-child { margin-bottom: 0; }
+    .section h3 { 
+      font-size: 12px; 
+      text-transform: uppercase; 
+      letter-spacing: 1.5px; 
+      color: var(--accent); 
+      margin: 0 0 16px 0;
+      font-weight: 700;
+    }
+
+    .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+    label { font-size: 13px; font-weight: 500; color: var(--text-muted); }
+
+    input[type=text], input[type=number], select {
+      background: #0f172a;
+      border: 1px solid var(--border);
+      color: white;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      width: 100%;
+      transition: border-color 0.2s;
+    }
+
+    input:focus, select:focus { outline: none; border-color: var(--accent); background: #1e293b; }
+
+    .options-grid { 
+      display: grid; 
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
+      gap: 12px; 
+    }
+
+    .checkbox-tile {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      padding: 12px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+    }
+
+    .checkbox-tile:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.15); }
+    .checkbox-tile input { width: 16px; height: 16px; accent-color: var(--accent); }
+    .checkbox-tile span { font-size: 13px; }
+
+    .preview-card { position: sticky; top: 24px; }
+    
+    .code-box {
+      background: #000;
+      padding: 16px;
+      border-radius: 8px;
+      font-family: var(--font-mono);
+      font-size: 14px;
+      color: #10b981;
+      border: 1px solid #1e293b;
+      min-height: 100px;
+      word-break: break-all;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .hint { font-size: 12px; color: var(--text-muted); margin-top: 6px; font-style: italic; }
+    .row { display: flex; gap: 16px; flex-wrap: wrap; }
+    .flex-1 { flex: 1; }
+    
+    footer { text-align: center; margin-top: 60px; padding-bottom: 40px; color: var(--text-muted); font-size: 13px; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+  <div class="brand">
+    <h1>ScanCraft</h1> 
+    <p>Precision-engineered command builder for network exploration</p>
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-secondary" id="btn-sample">
+      <span></span> Load Example
+    </button>
+    <button class="btn btn-danger-outline" id="btn-clear">
+      <span></span> Reset Workspace
+    </button>
+  </div>
+</header>
+
+  
+    <div class="grid">
+      <div class="card">
+        <div class="section">
+          <h3>Target Specification</h3>
+          <div class="row">
+            <div class="form-group flex-1">
+              <label for="target">Target Host/IP</label>
+              <input id="target" type="text" placeholder="e.g. 192.168.1.1 or scanme.nmap.org" />
+              <div class="hint">Supports IP, CIDR, hostname, or -iL file.</div>
+            </div>
+            <div class="form-group" style="width: 180px;">
+              <label for="concurrency">Discovery Mode</label>
+              <select id="concurrency">
+                <option value="">Default</option>
+                <option value="-Pn">No Ping (-Pn)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h3>Host Discovery</h3>
+          <div class="options-grid">
+            <label class="checkbox-tile"><input type="checkbox" data-arg="-sn"> <span>Ping Scan (-sn)</span></label>
+            <label class="checkbox-tile"><input type="checkbox" data-arg="-Pn"> <span>Assume Online (-Pn)</span></label>
+            <label class="checkbox-tile"><input type="checkbox" data-arg="-PS"> <span>TCP SYN Ping (-PS)</span></label>
+            <label class="checkbox-tile"><input type="checkbox" data-arg="-PA"> <span>TCP ACK Ping (-PA)</span></label>
+            <label class="checkbox-tile"><input type="checkbox" data-arg="-PE"> <span>ICMP Echo (-PE)</span></label>
+            <label class="checkbox-tile"><input type="checkbox" data-arg="-PP"> <span>ICMP Time (-PP)</span></label>
+          </div>
+        </div>
+
+        <div class="section">
+          <h3>Scan Techniques</h3>
+          <div class="options-grid">
+            <label class="checkbox-tile"><input type="checkbox" data-arg="-sS"> <span>TCP SYN (-sS)</span></label>
+            <label class="checkbox-tile"><input type="checkbox" data-arg="-sT"> <span>TCP Connect (-sT)</span></label>
+            <label class="checkbox-tile"><input type="checkbox" data-arg="-sU"> <span>UDP Scan (-sU)</span></label>
+            <label class="checkbox-tile"><input type="checkbox" data-arg="-sN"> <span>Null Scan (-sN)</span></label>
+            <label class="checkbox-tile"><input type="checkbox" data-arg="-sF"> <span>FIN Scan (-sF)</span></label>
+            <label class="checkbox-tile"><input type="checkbox" data-arg="-sX"> <span>XMAS Scan (-sX)</span></label>
+          </div>
+        </div>
+
+        <div class="section">
+          <h3>Ports & Versioning</h3>
+          <div class="row">
+            <div class="form-group flex-1">
+              <label for="ports">Port Range</label>
+              <input id="ports" type="text" placeholder="e.g. 80,443 or 1-1024" />
+            </div>
+            <div class="form-group" style="width: 120px;">
+              <label for="topports">Top Ports</label>
+              <input id="topports" type="number" placeholder="100" />
+            </div>
+          </div>
+          <div class="row" style="margin-top: 10px;">
+            <label class="checkbox-tile"><input type="checkbox" id="svc-detect"> <span>Service Version (-sV)</span></label>
+            <div class="form-group flex-1">
+              <input id="version-intensity" type="number" placeholder="Intensity (0-9)" />
+            </div>
+            <label class="checkbox-tile"><input type="checkbox" id="version-all"> <span>--version-all</span></label>
+          </div>
+        </div>
+
+        <div class="section">
+          <h3>Scripting & OS</h3>
+          <div class="row">
+            <label class="checkbox-tile"><input type="checkbox" id="sC"> <span>Default Scripts (-sC)</span></label>
+            <label class="checkbox-tile"><input type="checkbox" id="custom-script"> <span>Custom Script</span></label>
+            <div class="form-group flex-1"><input id="script-args" type="text" placeholder="vuln, safe, etc." /></div>
+          </div>
+          <div class="row" style="margin-top: 10px;">
+            <label class="checkbox-tile"><input type="checkbox" id="os-detect"> <span>OS Detection (-O)</span></label>
+            <label class="checkbox-tile"><input type="checkbox" id="os-guess"> <span>OS Guessing</span></label>
+          </div>
+        </div>
+
+        <div class="section">
+          <h3>Performance & Evasion</h3>
+          <div class="row">
+            <div class="form-group flex-1">
+              <label>Timing Template</label>
+              <select id="timing">
+                <option value="">Default</option>
+                <option value="-T0">T0 (Paranoid)</option>
+                <option value="-T1">T1 (Sneaky)</option>
+                <option value="-T2">T2 (Polite)</option>
+                <option value="-T3">T3 (Normal)</option>
+                <option value="-T4">T4 (Aggressive)</option>
+                <option value="-T5">T5 (Insane)</option>
+              </select>
+            </div>
+            <div class="form-group" style="width: 120px;">
+              <label>Max Retries</label>
+              <input id="max-retries" type="number" placeholder="3" />
+            </div>
+          </div>
+          <div class="options-grid" style="margin-top: 10px;">
+            <label class="checkbox-tile"><input type="checkbox" id="frag" data-arg="-f"> <span>Fragment (-f)</span></label>
+            <label class="checkbox-tile"><input type="checkbox" id="mtu" data-arg="--mtu"> <span>MTU</span></label>
+            <label class="checkbox-tile"><input type="checkbox" id="decoy" data-arg="-D"> <span>Decoy (-D)</span></label>
+            <label class="checkbox-tile"><input type="checkbox" id="spoof" data-arg="-S"> <span>Spoof (-S)</span></label>
+          </div>
+          <div class="row" style="margin-top: 12px;">
+            <input id="decoy-list" type="text" placeholder="Decoy IPs..." class="flex-1" />
+            <input id="spoof-ip" type="text" placeholder="Spoof Source IP..." class="flex-1" />
+          </div>
+        </div>
+
+        <div class="section">
+          <h3>Output Settings</h3>
+          <div class="options-grid">
+            <label class="checkbox-tile"><input type="checkbox" id="out-normal" data-arg="-oN"> <span>Normal (-oN)</span></label>
+            <label class="checkbox-tile"><input type="checkbox" id="out-xml" data-arg="-oX"> <span>XML (-oX)</span></label>
+            <label class="checkbox-tile"><input type="checkbox" id="out-all" data-arg="-oA"> <span>All Formats (-oA)</span></label>
+            <label class="checkbox-tile"><input type="checkbox" id="out-grep" data-arg="-oG"> <span>Grepable (-oG)</span></label>
+          </div>
+          <div class="row" style="margin-top: 12px;">
+            <div class="form-group flex-1">
+              <label>Filename</label>
+              <input id="out-file" type="text" placeholder="scan_results" />
+            </div>
+            <div class="form-group" style="width: 120px;">
+              <label>Verbosity</label>
+              <select id="verbosity">
+                <option value="">None</option>
+                <option value="-v">-v</option>
+                <option value="-vv">-vv</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h3>Misc Options</h3>
+          <div class="options-grid">
+            <label class="checkbox-tile"><input type="checkbox" id="traceroute" data-arg="--traceroute"> <span>Traceroute</span></label>
+            <label class="checkbox-tile"><input type="checkbox" id="reason" data-arg="--reason"> <span>Show Reason</span></label>
+            <label class="checkbox-tile"><input type="checkbox" id="open-only" data-arg="--open"> <span>Open Only</span></label>
+            <label class="checkbox-tile"><input type="checkbox" id="debug" data-arg="-d"> <span>Debug Mode</span></label>
+          </div>
+        </div>
+      </div>
+
+      <div class="preview-column">
+        <div class="card preview-card">
+          <h3 style="margin-top:0; color: white;">Command Preview</h3>
+          <div id="generated" class="code-box"># Configure options to see the command...</div>
+          
+          <button class="btn btn-primary" id="generate" style="width: 100%; justify-content: center; margin-bottom: 12px;">
+            GENERATE COMMAND
+          </button>
+          
+          <div class="row">
+            <button class="btn btn-secondary flex-1" id="copy" style="justify-content: center;">Copy</button>
+            <button class="btn btn-secondary flex-1" id="download" style="justify-content: center;">Save .sh</button>
+          </div>
+
+          <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border);">
+    <label style="font-weight: bold; color: #d9534f;">Important Legal Disclaimer</label>
+    <p class="hint" style="line-height: 1.6;">
+        <strong>Ethical Usage:</strong> This tool is designed for educational purposes and authorized security auditing only. Use Nmap responsibly. You must obtain explicit, written permission from the network owner before performing any reconnaissance or vulnerability scanning. 
+        <br><br>
+        <strong>Legal Compliance:</strong> Unauthorized access or scanning of private networks may violate local and international laws (such as the Computer Fraud and Abuse Act or GDPR). Users are solely responsible for ensuring their actions comply with applicable regulations.
+        <br><br>
+        <strong>Liability:</strong> The developers and providers of this platform assume no liability for any misuse, data loss, or service disruptions caused by the use of these tools.
+    </p>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      &copy; 2026 Nmap CLI Generator Tool • Optimized for Security Professionals
+    </footer>
+  </div>
+
+  <script>
+    /* Logic remains identical to original for full functionality compatibility */
+    const $ = id => document.getElementById(id);
+    const qAll = sel => Array.from(document.querySelectorAll(sel));
+
+    function collectOptions(){
+      const args = [];
+      const target = $('target').value.trim();
+      if(!target) return { error: 'Please enter a target host or IP.' };
+
+      qAll('input[type=checkbox][data-arg]').forEach(cb=>{
+        if(cb.checked){
+          const arg = cb.getAttribute('data-arg');
+          args.push(arg);
+        }
+      });
+
+      const concurrency = $('concurrency').value;
+      if(concurrency) args.push(concurrency);
+
+      if($('svc-detect').checked){
+        const intensity = $('version-intensity').value.trim();
+        args.push('-sV' + (intensity ? ` --version-intensity ${intensity}` : ''));
+      }
+      if($('version-all').checked) args.push('--version-all');
+
+      if($('sC').checked) args.push('-sC');
+      if($('custom-script').checked){
+        const s = $('script-args').value.trim();
+        if(s) args.push(`--script=${s}`);
+      }
+
+      const ports = $('ports').value.trim();
+      if(ports) args.push(`-p ${ports}`);
+      const tp = $('topports').value.trim(); if(tp) args.push(`--top-ports ${tp}`);
+
+      const timing = $('timing').value; if(timing) args.push(timing);
+      const retries = $('max-retries').value.trim(); if(retries) args.push(`--max-retries ${retries}`);
+
+      if($('frag').checked && !args.includes('-f')) args.push('-f');
+
+      if($('mtu').checked){
+        const mtuval = prompt('Enter MTU value (e.g. 24):');
+        if(mtuval) args.push(`--mtu ${mtuval}`);
+      }
+
+      if($('decoy').checked){
+        const dec = $('decoy-list').value.trim();
+        if(dec) args.push(`-D ${dec}`);
+      }
+
+      if($('spoof').checked){
+        const s = $('spoof-ip').value.trim();
+        if(s) args.push(`-S ${s}`);
+      }
+
+      const outFile = $('out-file').value.trim() || 'scan_result';
+      if($('out-normal').checked) args.push(`-oN ${outFile}.nmap`);
+      if($('out-xml').checked) args.push(`-oX ${outFile}.xml`);
+      if($('out-grep').checked) args.push(`-oG ${outFile}.grep`);
+      if($('out-all').checked) args.push(`-oA ${outFile}`);
+
+      if($('traceroute').checked) args.push('--traceroute');
+      if($('reason').checked) args.push('--reason');
+      if($('open-only').checked) args.push('--open');
+      if($('debug').checked) args.push('-d');
+
+      const verb = $('verbosity').value;
+      if(verb) args.unshift(verb);
+
+      const clean = args.join(' ').replace(/\s+/g,' ').trim();
+      return { target, args: clean ? clean.split(' ') : [] };
+    }
+
+    function generate(){
+      const c = collectOptions();
+      if(c.error){ $('generated').textContent = '# Error: ' + c.error; return null; }
+      const cmd = `nmap ${c.args.join(' ')} ${c.target}`.replace(/\s+/g,' ').trim();
+      $('generated').textContent = cmd || '# No options selected.';
+      return cmd;
+    }
+
+    $('generate').addEventListener('click', ()=>{
+      const cmd = generate();
+      if(!cmd) return;
+      if(cmd.includes('-S')){
+        const ok = confirm('You enabled spoofing (-S). Ensure you have authorization. Proceed?');
+        if(!ok) return;
+      }
+    });
+
+    $('copy').addEventListener('click', async ()=>{
+      const txt = $('generated').textContent;
+      if(!txt || txt.startsWith('#')){ alert('No valid command to copy.'); return; }
+      try{
+        await navigator.clipboard.writeText(txt);
+        const previous = $('copy').textContent;
+        $('copy').textContent = 'Copied!';
+        setTimeout(()=> $('copy').textContent = previous, 1500);
+      }catch(e){
+        alert('Copy failed. Please copy manually.');
+      }
+    });
+
+    $('btn-clear').addEventListener('click', ()=>{
+      if(!confirm('Reset all fields?')) return;
+      qAll('input[type=text]').forEach(i=>i.value='');
+      qAll('input[type=number]').forEach(i=>i.value='');
+      qAll('input[type=checkbox]').forEach(c=>c.checked=false);
+      qAll('select').forEach(s=>s.selectedIndex = 0);
+      $('generated').textContent = '# Cleared. Enter target to start.';
+    });
+
+    $('btn-sample').addEventListener('click', ()=>{
+      $('target').value = '192.168.1.0/24';
+      $('ports').value = '1-65535';
+      qAll('input[data-arg="-sn"]')[0].checked = true;
+      qAll('input[data-arg="-sS"]')[0].checked = true;
+      $('svc-detect').checked = true; 
+      $('sC').checked = true; 
+      $('os-detect').checked = true; 
+      $('timing').value='-T4';
+      generate();
+    });
+
+    $('download').addEventListener('click', ()=>{
+      const txt = $('generated').textContent;
+      if(!txt || txt.startsWith('#')){ alert('Generate a command first.'); return; }
+      const blob = new Blob(["#!/bin/sh\n#generated by nmap cli generator\n"+txt+"\n"], {type:'text/x-sh'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'nmap_scan.sh'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    });
+  </script>
+</body>
+</html>
