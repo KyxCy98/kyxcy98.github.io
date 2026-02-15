@@ -178,6 +178,9 @@
               <label for="target">Target Host/IP</label>
               <input id="target" type="text" placeholder="e.g. 192.168.1.1 or scanme.nmap.org" />
               <div class="hint">Supports IP, CIDR, hostname, or -iL file.</div>
+              <div class="option-grid">
+            <label class="checkbox-tile"><input type="checkbox" data-arg="-iL"> <span>List Scan(-iL)</span></label>
+              </div>
             </div>
             <div class="form-group" style="width: 180px;">
               <label for="concurrency">Discovery Mode</label>
@@ -198,6 +201,7 @@
             <label class="checkbox-tile"><input type="checkbox" data-arg="-PA"> <span>TCP ACK Ping (-PA)</span></label>
             <label class="checkbox-tile"><input type="checkbox" data-arg="-PE"> <span>ICMP Echo (-PE)</span></label>
             <label class="checkbox-tile"><input type="checkbox" data-arg="-PP"> <span>ICMP Time (-PP)</span></label>
+            <label class="checkbox-tile"><input type="checkbox" data-arg="--system-dns"> <span>Dns Resolver (--system-dns)</span></label>
           </div>
         </div>
 
@@ -210,6 +214,9 @@
             <label class="checkbox-tile"><input type="checkbox" data-arg="-sN"> <span>Null Scan (-sN)</span></label>
             <label class="checkbox-tile"><input type="checkbox" data-arg="-sF"> <span>FIN Scan (-sF)</span></label>
             <label class="checkbox-tile"><input type="checkbox" data-arg="-sX"> <span>XMAS Scan (-sX)</span></label>
+            <label class="checkbox-tile"><input type="checkbox" data-arg="-sY"> <span>SCTP INIT/COOKIE-ECHO (-sY)</span></label>
+            <label class="checkbox-tile"><input type="checkbox" data-arg="-sZ"> <span>SCTP INIT/COOKIE-ECHO (-sZ)</span></label>
+            <label class="checkbox-tile"><input type="checkbox" data-arg="-F"> <span>Fast Mode (-F)</span></label>
           </div>
         </div>
 
@@ -231,6 +238,7 @@
               <input id="version-intensity" type="number" placeholder="Intensity (0-9)" />
             </div>
             <label class="checkbox-tile"><input type="checkbox" id="version-all"> <span>--version-all</span></label>
+            <label class="checkbox-tile"><input type="checkbox" data-arg="--version-trace"> <span>Detailed Version (--version-trace)</span></label>
           </div>
         </div>
 
