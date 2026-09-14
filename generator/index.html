@@ -1,493 +1,1630 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Nmap CLI Generator — Professional Edition</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>ScanCraft — Advanced Nmap Command Builder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   THEME TOKENS — softer, more humane dark palette
+   ============================================================ */
+:root{
+  /* Backgrounds — deep navy, not pure black */
+  --bg:#0b0f19;
+  --bg-glow:#1a1040;
+  --bg-glow-2:#0f1a2e;
 
-  <style>
-    :root {
-      --bg-dark: #0a0f14;
-      --bg-card: #12181f;
-      --accent: #8b5cf6;
-      --accent-hover: #a78bfa;
-      --text-main: #f1f5f9;
-      --text-muted: #94a3b8;
-      --border: rgba(255, 255, 255, 0.08);
-      --glass: rgba(255, 255, 255, 0.03);
-      --radius: 12px;
-      --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    }
+  /* Surfaces — layered elevation */
+  --surface:#111827;
+  --surface-2:#1a2234;
+  --surface-3:#232d42;
+  --surface-4:#2d3a52;
 
-    * { box-sizing: border-box; }
-    
-    html, body { 
-      margin: 0; 
-      background-color: var(--bg-dark); 
-      background-image: radial-gradient(circle at 50% 0%, #1e1b4b 0%, var(--bg-dark) 70%);
-      color: var(--text-main); 
-      line-height: 1.5;
-      -webkit-font-smoothing: antialiased;
-    }
+  /* Borders */
+  --border:rgba(255,255,255,.06);
+  --border-2:rgba(255,255,255,.12);
+  --border-focus:rgba(139,92,246,.55);
 
-    .container { max-width: 1200px; margin: 40px auto; padding: 0 24px; }
+  /* Text — off-white, never pure white */
+  --text:#e2e8f0;
+  --text-2:#94a3b8;
+  --text-3:#64748b;
+  --text-4:#475569;
 
-    header { 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      margin-bottom: 32px;
-      padding-bottom: 24px;
-      border-bottom: 1px solid var(--border);
-    }
+  /* Accents */
+  --accent:#8b5cf6;
+  --accent-2:#a78bfa;
+  --accent-3:#c4b5fd;
+  --accent-soft:rgba(139,92,246,.12);
+  --accent-glow:rgba(139,92,246,.25);
 
-    .brand h1 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.5px; background: linear-gradient(90deg, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .brand p { margin: 4px 0 0; color: var(--text-muted); font-size: 14px; }
+  /* Semantic */
+  --green:#10b981;
+  --green-soft:rgba(16,185,129,.12);
+  --amber:#f59e0b;
+  --amber-soft:rgba(245,158,11,.12);
+  --red:#ef4444;
+  --red-soft:rgba(239,68,68,.12);
+  --blue:#3b82f6;
+  --cyan:#06b6d4;
 
-    .header-actions { display: flex; gap: 12px; }
+  /* Radius */
+  --r:14px;
+  --r-sm:10px;
+  --r-xs:7px;
 
-    .btn { 
-      padding: 10px 18px; 
-      border-radius: 8px; 
-      font-size: 14px; 
-      font-weight: 600; 
-      cursor: pointer; 
-      transition: all 0.2s ease;
-      border: 1px solid transparent;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
+  /* Typography */
+  --sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace;
 
-    .btn-primary { background: var(--accent); color: white; border-color: var(--accent); }
-    .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3); }
-    
-    .btn-secondary { background: var(--glass); color: var(--text-main); border-color: var(--border); }
-    .btn-secondary:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.2); }
+  /* Shadow */
+  --shadow:0 8px 32px -8px rgba(0,0,0,.55);
+  --shadow-sm:0 4px 16px -4px rgba(0,0,0,.4);
+  --shadow-glow:0 0 24px -6px var(--accent-glow);
 
-    .grid { display: grid; grid-template-columns: 1fr 380px; gap: 24px; }
-    @media (max-width: 1024px) { .grid { grid-template-columns: 1fr; } }
+  /* Transitions */
+  --ease:cubic-bezier(.22,1,.36,1);
+}
 
-    .card { 
-      background: var(--bg-card); 
-      border: 1px solid var(--border); 
-      border-radius: var(--radius); 
-      padding: 24px;
-      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3);
-    }
+/* Light theme — warm parchment feel */
+html[data-theme="light"]{
+  --bg:#f5f6fa;
+  --bg-glow:#dde4ff;
+  --bg-glow-2:#e8eeff;
+  --surface:#ffffff;
+  --surface-2:#f8f9fd;
+  --surface-3:#eef0f7;
+  --surface-4:#e2e5f0;
+  --border:rgba(15,23,42,.07);
+  --border-2:rgba(15,23,42,.14);
+  --border-focus:rgba(124,58,237,.5);
+  --text:#0f172a;
+  --text-2:#475569;
+  --text-3:#64748b;
+  --text-4:#94a3b8;
+  --accent:#7c3aed;
+  --accent-2:#8b5cf6;
+  --accent-3:#a78bfa;
+  --accent-soft:rgba(124,58,237,.08);
+  --accent-glow:rgba(124,58,237,.18);
+  --shadow:0 8px 28px -10px rgba(15,23,42,.18);
+  --shadow-sm:0 4px 14px -6px rgba(15,23,42,.12);
+  --shadow-glow:0 0 24px -8px var(--accent-glow);
+}
 
-    .section { margin-bottom: 32px; }
-    .section:last-child { margin-bottom: 0; }
-    .section h3 { 
-      font-size: 12px; 
-      text-transform: uppercase; 
-      letter-spacing: 1.5px; 
-      color: var(--accent); 
-      margin: 0 0 16px 0;
-      font-weight: 700;
-    }
+/* ============================================================
+   BASE
+   ============================================================ */
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  min-height:100vh;
+  font-family:var(--sans);
+  font-size:14px;
+  color:var(--text);
+  background:
+    radial-gradient(1200px 600px at 50% -15%, var(--bg-glow) 0%, transparent 60%),
+    radial-gradient(800px 400px at 85% 100%, var(--bg-glow-2) 0%, transparent 55%),
+    var(--bg);
+  background-attachment:fixed;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  transition:background-color .3s var(--ease),color .3s var(--ease);
+}
+::selection{background:var(--accent);color:#fff}
 
-    .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
-    label { font-size: 13px; font-weight: 500; color: var(--text-muted); }
+/* Scrollbar */
+::-webkit-scrollbar{width:9px;height:9px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--surface-4);border-radius:20px;border:2px solid transparent;background-clip:content-box}
+::-webkit-scrollbar-thumb:hover{background:var(--border-2);background-clip:content-box}
 
-    input[type=text], input[type=number], select {
-      background: #0f172a;
-      border: 1px solid var(--border);
-      color: white;
-      padding: 12px;
-      border-radius: 8px;
-      font-size: 14px;
-      width: 100%;
-      transition: border-color 0.2s;
-    }
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.app{max-width:1440px;margin:0 auto;padding:24px 20px 80px}
 
-    input:focus, select:focus { outline: none; border-color: var(--accent); background: #1e293b; }
+/* ---------- Top bar ---------- */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  flex-wrap:wrap;margin-bottom:20px;padding-bottom:18px;
+  border-bottom:1px solid var(--border);
+}
+.brand{display:flex;align-items:center;gap:14px}
+.logo{
+  width:44px;height:44px;flex:none;border-radius:12px;
+  display:grid;place-items:center;font-size:20px;
+  background:linear-gradient(140deg,var(--accent),#4c1d95);
+  color:#fff;box-shadow:var(--shadow-glow);
+}
+.brand h1{
+  font-size:20px;font-weight:800;letter-spacing:-.5px;
+  background:linear-gradient(92deg,var(--text),var(--text-3));
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+}
+.brand p{font-size:12px;color:var(--text-3);margin-top:1px}
 
-    .options-grid { 
-      display: grid; 
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
-      gap: 12px; 
-    }
+.top-actions{display:flex;gap:8px;flex-wrap:wrap}
 
-    .checkbox-tile {
-      background: var(--glass);
-      border: 1px solid var(--border);
-      padding: 12px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      cursor: pointer;
-      transition: all 0.2s;
-      user-select: none;
-    }
+/* ---------- Buttons ---------- */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  padding:9px 15px;border-radius:var(--r-sm);border:1px solid var(--border);
+  background:var(--surface);color:var(--text);font-family:var(--sans);
+  font-size:12.5px;font-weight:600;cursor:pointer;
+  transition:all .18s var(--ease);white-space:nowrap;user-select:none;
+}
+.btn:hover{background:var(--surface-3);border-color:var(--border-2);transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
+.btn.sm{padding:7px 12px;font-size:11.5px}
+.btn.xs{padding:5px 10px;font-size:11px}
+.btn.block{width:100%}
+.btn.primary{
+  background:linear-gradient(135deg,var(--accent),#6d28d9);
+  border-color:transparent;color:#fff;
+  box-shadow:0 6px 20px -8px var(--accent-glow);
+}
+.btn.primary:hover{filter:brightness(1.12);box-shadow:0 8px 28px -6px var(--accent-glow)}
+.btn.ghost{background:transparent}
+.btn.ghost:hover{background:var(--surface-2)}
+.btn.danger{color:var(--red);border-color:rgba(239,68,68,.25)}
+.btn.danger:hover{background:var(--red-soft);border-color:rgba(239,68,68,.45)}
+.btn.ok{color:var(--green);border-color:rgba(16,185,129,.35)}
+.btn.ok:hover{background:var(--green-soft)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important}
+.row{display:flex;gap:8px}
+.row .btn{flex:1}
 
-    .checkbox-tile:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.15); }
-    .checkbox-tile input { width: 16px; height: 16px; accent-color: var(--accent); }
-    .checkbox-tile span { font-size: 13px; }
+/* ---------- Presets ---------- */
+.presets{
+  display:flex;gap:8px;overflow-x:auto;padding:2px 2px 14px;
+  scrollbar-width:thin;
+}
+.presets::-webkit-scrollbar{height:5px}
+.presets::-webkit-scrollbar-thumb{background:var(--surface-4);border-radius:10px}
+.preset{
+  flex:none;display:inline-flex;align-items:center;gap:6px;
+  padding:7px 13px;border-radius:999px;cursor:pointer;
+  background:var(--surface);border:1px solid var(--border);
+  color:var(--text-2);font-size:12px;font-weight:600;font-family:var(--sans);
+  transition:all .18s var(--ease);white-space:nowrap;
+}
+.preset:hover{color:var(--text);border-color:var(--border-2);transform:translateY(-1px)}
+.preset.active{
+  color:#fff;border-color:transparent;
+  background:linear-gradient(135deg,var(--accent),#6d28d9);
+  box-shadow:0 6px 18px -8px var(--accent-glow);
+}
+html[data-theme="light"] .preset.active{color:#fff}
 
-    .preview-card { position: sticky; top: 24px; }
-    
-    .code-box {
-      background: #000;
-      padding: 16px;
-      border-radius: 8px;
-      font-family: var(--font-mono);
-      font-size: 14px;
-      color: #10b981;
-      border: 1px solid #1e293b;
-      min-height: 100px;
-      word-break: break-all;
-      margin-bottom: 20px;
-      line-height: 1.6;
-    }
+/* ---------- Main layout ---------- */
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:20px;align-items:start}
+@media (max-width:1100px){.layout{grid-template-columns:1fr}}
 
-    .hint { font-size: 12px; color: var(--text-muted); margin-top: 6px; font-style: italic; }
-    .row { display: flex; gap: 16px; flex-wrap: wrap; }
-    .flex-1 { flex: 1; }
-    
-    footer { text-align: center; margin-top: 60px; padding-bottom: 40px; color: var(--text-muted); font-size: 13px; }
-  </style>
+/* ---------- Toolbar ---------- */
+.toolbar{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.search-wrap{
+  flex:1;min-width:200px;display:flex;align-items:center;gap:8px;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r-sm);padding:0 12px;
+  transition:border-color .18s,box-shadow .18s;
+}
+.search-wrap:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.search-wrap span{opacity:.45;font-size:14px}
+.search-wrap input{
+  flex:1;background:none;border:none;outline:none;color:var(--text);
+  font-family:var(--sans);font-size:13px;padding:10px 0;
+}
+.search-wrap input::placeholder{color:var(--text-4)}
+
+/* ============================================================
+   SECTIONS / ACCORDION
+   ============================================================ */
+.section{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r);margin-bottom:10px;overflow:hidden;
+  transition:border-color .2s var(--ease),box-shadow .2s var(--ease);
+}
+.section[open]{box-shadow:var(--shadow-sm)}
+.section summary{
+  list-style:none;cursor:pointer;user-select:none;
+  display:flex;align-items:center;gap:10px;padding:14px 16px;
+  transition:background .16s var(--ease);
+}
+.section summary::-webkit-details-marker{display:none}
+.section summary:hover{background:var(--surface-2)}
+.sec-icon{font-size:15px;width:20px;text-align:center;flex:none;opacity:.85}
+.sec-title{font-size:13px;font-weight:700;letter-spacing:.15px;flex:1}
+.sec-count{
+  font-family:var(--mono);font-size:10px;font-weight:700;
+  min-width:20px;height:20px;padding:0 6px;border-radius:999px;
+  display:none;place-items:center;
+  background:var(--accent-soft);color:var(--accent-2);
+  border:1px solid rgba(139,92,246,.22);
+}
+.sec-count.on{display:grid}
+.sec-badge{
+  font-size:9.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;
+  padding:2px 7px;border-radius:999px;
+  background:var(--surface-3);color:var(--text-3);
+}
+.chev{font-size:10px;color:var(--text-4);transition:transform .25s var(--ease)}
+.section[open] .chev{transform:rotate(180deg)}
+.sec-body{padding:2px 16px 16px;border-top:1px solid var(--border)}
+
+/* ============================================================
+   OPTIONS GRID
+   ============================================================ */
+.opt-grid{
+  display:grid;gap:9px;padding-top:12px;
+  grid-template-columns:repeat(auto-fill,minmax(195px,1fr));
+}
+.opt-grid .wide{grid-column:1/-1}
+.opt-grid .span2{grid-column:span 2}
+@media (max-width:600px){.opt-grid .span2{grid-column:1/-1}}
+
+.opt{display:flex;flex-direction:column;gap:5px;min-width:0}
+.opt label{
+  font-size:11px;font-weight:600;color:var(--text-2);
+  letter-spacing:.3px;text-transform:uppercase;
+  display:flex;align-items:center;gap:5px;flex-wrap:wrap;
+}
+.opt label code{
+  font-size:10px;text-transform:none;letter-spacing:0;
+  color:var(--accent-2);background:var(--accent-soft);
+  padding:1px 6px;border-radius:5px;font-weight:600;
+  font-family:var(--mono);
+}
+.opt input[type=text],.opt input[type=number],.opt select{
+  width:100%;padding:9px 11px;border-radius:var(--r-xs);
+  background:var(--surface-2);border:1px solid var(--border);
+  color:var(--text);font-family:var(--sans);font-size:12.5px;
+  outline:none;transition:border-color .16s,box-shadow .16s,background .16s;
+}
+.opt select{
+  appearance:none;cursor:pointer;
+  background-image:
+    linear-gradient(45deg,transparent 50%,var(--text-4) 50%),
+    linear-gradient(135deg,var(--text-4) 50%,transparent 50%);
+  background-position:calc(100% - 16px) 50%,calc(100% - 11px) 50%;
+  background-size:5px 5px,5px 5px;background-repeat:no-repeat;
+  padding-right:30px;
+}
+.opt input:focus,.opt select:focus{
+  border-color:var(--accent);background:var(--surface-3);
+  box-shadow:0 0 0 3px var(--accent-soft);
+}
+.opt input::placeholder{color:var(--text-4)}
+.opt input[type=number]{font-family:var(--mono)}
+.hint{font-size:10.5px;color:var(--text-4);font-style:italic;line-height:1.45}
+
+/* ---------- Tiles (checkbox) ---------- */
+.tile{
+  display:flex;align-items:center;gap:8px;padding:9px 11px;
+  background:var(--surface-2);border:1px solid var(--border);
+  border-radius:var(--r-xs);cursor:pointer;user-select:none;
+  transition:all .16s var(--ease);min-width:0;
+}
+.tile:hover{background:var(--surface-3);border-color:var(--border-2)}
+.tile:has(input:checked){
+  background:var(--accent-soft);border-color:rgba(139,92,246,.35);
+}
+.tile input[type=checkbox]{
+  width:14px;height:14px;flex:none;accent-color:var(--accent);cursor:pointer;
+  border-radius:4px;
+}
+.tile-body{display:flex;flex-direction:column;gap:1px;min-width:0}
+.tile-label{font-size:12px;font-weight:500;line-height:1.3}
+.tile-tag{
+  font-family:var(--mono);font-size:9.5px;color:var(--text-4);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.tile:has(input:checked) .tile-tag{color:var(--accent-2)}
+
+.tile-col{flex-direction:column;align-items:stretch;gap:7px;cursor:default}
+.tile-head{display:flex;align-items:center;gap:8px;cursor:pointer}
+.tile-head .tile-label{flex:1}
+.tile-col input[type=text]{
+  width:100%;padding:6px 9px;border-radius:6px;font-size:11.5px;
+  background:var(--surface);border:1px solid var(--border);
+  color:var(--text);outline:none;font-family:var(--mono);
+}
+.tile-col input[type=text]:focus{border-color:var(--accent)}
+
+/* ---------- Script categories ---------- */
+.script-cats{
+  display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;
+}
+.script-cat{
+  font-size:10.5px;font-weight:600;padding:3px 9px;border-radius:999px;
+  background:var(--surface-3);color:var(--text-3);cursor:pointer;
+  border:1px solid var(--border);transition:all .15s var(--ease);
+  font-family:var(--mono);
+}
+.script-cat:hover{background:var(--surface-4);color:var(--text)}
+.script-cat.on{
+  background:var(--accent-soft);color:var(--accent-2);
+  border-color:rgba(139,92,246,.35);
+}
+
+/* ============================================================
+   PREVIEW PANEL
+   ============================================================ */
+.col-side{position:sticky;top:20px}
+@media (max-width:1100px){.col-side{position:static}}
+
+.card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r);padding:18px;box-shadow:var(--shadow);
+}
+.preview-head{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:11px;
+}
+.preview-head h2{font-size:13px;font-weight:700;letter-spacing:.2px}
+
+.switch{
+  display:flex;align-items:center;gap:6px;cursor:pointer;
+  font-size:11px;color:var(--text-3);font-weight:600;
+}
+.switch input{width:13px;height:13px;accent-color:var(--accent);cursor:pointer}
+
+/* Command box */
+.cmd-box{
+  margin:0 0 12px;padding:14px;border-radius:var(--r-sm);
+  background:#060a12;border:1px solid var(--border);
+  font-family:var(--mono);font-size:12px;line-height:1.8;
+  color:#34d399;min-height:90px;
+  white-space:pre-wrap;word-break:break-word;overflow-wrap:anywhere;
+}
+html[data-theme="light"] .cmd-box{background:#0d1524}
+.cmd-box .muted{color:#475569;font-style:italic}
+.cmd-box .err{color:#f87171}
+.t-cmd{color:#f472b6;font-weight:700}
+.t-flag{color:#a78bfa}
+.t-num{color:#fbbf24}
+.t-tgt{color:#34d399}
+.t-script{color:#67e8f9}
+
+/* Alerts */
+.alert{
+  border-radius:var(--r-sm);padding:10px 12px;font-size:11.5px;
+  margin-bottom:10px;line-height:1.55;
+}
+.alert b{display:block;margin-bottom:3px;font-size:10.5px;letter-spacing:.4px;text-transform:uppercase}
+.alert ul{margin:0;padding-left:15px}
+.alert li{margin-bottom:1px}
+.alert.warn{background:var(--amber-soft);border:1px solid rgba(245,158,11,.22);color:#fbbf24}
+.alert.danger{background:var(--red-soft);border:1px solid rgba(239,68,68,.22);color:#f87171}
+.alert.danger p{margin:0}
+.alert.info{background:var(--accent-soft);border:1px solid rgba(139,92,246,.2);color:var(--accent-3)}
+
+/* Actions */
+.actions{display:flex;flex-direction:column;gap:8px}
+
+/* Explanation panel */
+.explain{
+  margin-top:12px;border-top:1px solid var(--border);padding-top:12px;
+}
+.explain h3{
+  font-size:10.5px;font-weight:700;letter-spacing:1.2px;
+  text-transform:uppercase;color:var(--text-4);margin-bottom:8px;
+}
+.explain-list{display:flex;flex-direction:column;gap:5px}
+.explain-item{
+  display:flex;gap:8px;font-size:11.5px;line-height:1.5;
+}
+.explain-item code{
+  font-family:var(--mono);font-size:11px;color:var(--accent-2);
+  background:var(--accent-soft);padding:1px 6px;border-radius:4px;
+  white-space:nowrap;flex:none;
+}
+.explain-item span{color:var(--text-2)}
+
+/* History */
+.history-wrap{margin-top:16px;padding-top:14px;border-top:1px solid var(--border)}
+.history-wrap h3{
+  font-size:10px;font-weight:700;letter-spacing:1.3px;
+  text-transform:uppercase;color:var(--text-4);margin-bottom:8px;
+}
+.history{display:flex;flex-direction:column;gap:5px}
+.history:empty::after{
+  content:'Copy a command to start a history.';
+  font-size:11px;color:var(--text-4);font-style:italic;
+}
+.hist-item{
+  font-family:var(--mono);font-size:10.5px;padding:7px 9px;
+  background:var(--surface-2);border:1px solid var(--border);
+  border-radius:6px;cursor:pointer;color:var(--text-3);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  transition:all .16s var(--ease);text-align:left;width:100%;
+}
+.hist-item:hover{color:var(--text);border-color:var(--accent);background:var(--accent-soft)}
+
+/* Disclaimer */
+.disclaimer{margin-top:14px;border-top:1px solid var(--border);padding-top:12px}
+.disclaimer summary{
+  cursor:pointer;font-size:11px;font-weight:700;color:var(--red);
+  letter-spacing:.3px;list-style:none;user-select:none;
+}
+.disclaimer summary::-webkit-details-marker{display:none}
+.disclaimer summary::before{content:'▸ ';transition:transform .2s;display:inline-block}
+.disclaimer[open] summary::before{transform:rotate(90deg)}
+.disclaimer p{font-size:11px;color:var(--text-3);line-height:1.65;margin:8px 0 0}
+.disclaimer strong{color:var(--text)}
+
+/* Toasts */
+#toasts{
+  position:fixed;bottom:20px;right:20px;z-index:200;
+  display:flex;flex-direction:column;gap:7px;align-items:flex-end;
+}
+.toast{
+  padding:10px 14px;border-radius:9px;font-size:12px;font-weight:600;
+  background:var(--surface-3);border:1px solid var(--border-2);
+  color:var(--text);box-shadow:var(--shadow);
+  animation:slideIn .22s var(--ease);max-width:300px;
+}
+.toast.ok{border-color:rgba(16,185,129,.4);color:#34d399}
+.toast.err{border-color:rgba(239,68,68,.4);color:#f87171}
+.toast.out{opacity:0;transform:translateX(12px);transition:all .24s var(--ease)}
+@keyframes slideIn{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:none}}
+
+footer{
+  text-align:center;margin-top:40px;padding-top:20px;
+  border-top:1px solid var(--border);color:var(--text-4);font-size:11.5px;
+}
+footer kbd{
+  font-family:var(--mono);font-size:10px;padding:2px 6px;border-radius:4px;
+  background:var(--surface-3);border:1px solid var(--border);color:var(--text-3);
+}
+
+/* Utility */
+.hidden{display:none!important}
+</style>
 </head>
 <body>
 
-  <div class="container">
-    <header>
-  <div class="brand">
-    <h1>ScanCraft</h1> 
-    <p>Precision-engineered command builder for network exploration</p>
-  </div>
-  <div class="header-actions">
-    <button class="btn btn-secondary" id="btn-sample">
-      <span></span> Load Example
-    </button>
-    <button class="btn btn-danger-outline" id="btn-clear">
-      <span></span> Reset Workspace
-    </button>
-  </div>
-</header>
+<div class="app">
 
-  
-    <div class="grid">
-      <div class="card">
-        <div class="section">
-          <h3>Target Specification</h3>
-          <div class="row">
-            <div class="form-group flex-1">
-              <label for="target">Target Host/IP</label>
-              <input id="target" type="text" placeholder="e.g. 192.168.1.1 or scanme.nmap.org" />
-              <div class="hint">Supports IP, CIDR, hostname, or -iL file.</div>
-              <div class="option-grid">
-            <label class="checkbox-tile"><input type="checkbox" data-arg="-iL"> <span>List Scan(-iL)</span></label>
-              </div>
-            </div>
-            <div class="form-group" style="width: 180px;">
-              <label for="concurrency">Discovery Mode</label>
-              <select id="concurrency">
-                <option value="">Default</option>
-                <option value="-Pn">No Ping (-Pn)</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <div class="section">
-          <h3>Host Discovery</h3>
-          <div class="options-grid">
-            <label class="checkbox-tile"><input type="checkbox" data-arg="-sn"> <span>Ping Scan (-sn)</span></label>
-            <label class="checkbox-tile"><input type="checkbox" data-arg="-Pn"> <span>Assume Online (-Pn)</span></label>
-            <label class="checkbox-tile"><input type="checkbox" data-arg="-PS"> <span>TCP SYN Ping (-PS)</span></label>
-            <label class="checkbox-tile"><input type="checkbox" data-arg="-PA"> <span>TCP ACK Ping (-PA)</span></label>
-            <label class="checkbox-tile"><input type="checkbox" data-arg="-PE"> <span>ICMP Echo (-PE)</span></label>
-            <label class="checkbox-tile"><input type="checkbox" data-arg="-PP"> <span>ICMP Time (-PP)</span></label>
-            <label class="checkbox-tile"><input type="checkbox" data-arg="--system-dns"> <span>Dns Resolver (--system-dns)</span></label>
-          </div>
-        </div>
-
-        <div class="section">
-          <h3>Scan Techniques</h3>
-          <div class="options-grid">
-            <label class="checkbox-tile"><input type="checkbox" data-arg="-sS"> <span>TCP SYN (-sS)</span></label>
-            <label class="checkbox-tile"><input type="checkbox" data-arg="-sT"> <span>TCP Connect (-sT)</span></label>
-            <label class="checkbox-tile"><input type="checkbox" data-arg="-sU"> <span>UDP Scan (-sU)</span></label>
-            <label class="checkbox-tile"><input type="checkbox" data-arg="-sN"> <span>Null Scan (-sN)</span></label>
-            <label class="checkbox-tile"><input type="checkbox" data-arg="-sF"> <span>FIN Scan (-sF)</span></label>
-            <label class="checkbox-tile"><input type="checkbox" data-arg="-sX"> <span>XMAS Scan (-sX)</span></label>
-            <label class="checkbox-tile"><input type="checkbox" data-arg="-sY"> <span>SCTP INIT/COOKIE-ECHO (-sY)</span></label>
-            <label class="checkbox-tile"><input type="checkbox" data-arg="-sZ"> <span>SCTP INIT/COOKIE-ECHO (-sZ)</span></label>
-            <label class="checkbox-tile"><input type="checkbox" data-arg="-F"> <span>Fast Mode (-F)</span></label>
-          </div>
-        </div>
-
-        <div class="section">
-          <h3>Ports & Versioning</h3>
-          <div class="row">
-            <div class="form-group flex-1">
-              <label for="ports">Port Range</label>
-              <input id="ports" type="text" placeholder="e.g. 80,443 or 1-1024" />
-            </div>
-            <div class="form-group" style="width: 120px;">
-              <label for="topports">Top Ports</label>
-              <input id="topports" type="number" placeholder="100" />
-            </div>
-          </div>
-          <div class="row" style="margin-top: 10px;">
-            <label class="checkbox-tile"><input type="checkbox" id="svc-detect"> <span>Service Version (-sV)</span></label>
-            <div class="form-group flex-1">
-              <input id="version-intensity" type="number" placeholder="Intensity (0-9)" />
-            </div>
-            <label class="checkbox-tile"><input type="checkbox" id="version-all"> <span>--version-all</span></label>
-            <label class="checkbox-tile"><input type="checkbox" data-arg="--version-trace"> <span>Detailed Version (--version-trace)</span></label>
-          </div>
-        </div>
-
-        <div class="section">
-          <h3>Scripting & OS</h3>
-          <div class="row">
-            <label class="checkbox-tile"><input type="checkbox" id="sC"> <span>Default Scripts (-sC)</span></label>
-            <label class="checkbox-tile"><input type="checkbox" id="custom-script"> <span>Custom Script</span></label>
-            <div class="form-group flex-1"><input id="script-args" type="text" placeholder="vuln, safe, etc." /></div>
-          </div>
-          <div class="row" style="margin-top: 10px;">
-            <label class="checkbox-tile"><input type="checkbox" id="os-detect"> <span>OS Detection (-O)</span></label>
-            <label class="checkbox-tile"><input type="checkbox" id="os-guess"> <span>OS Guessing</span></label>
-          </div>
-        </div>
-
-        <div class="section">
-          <h3>Performance & Evasion</h3>
-          <div class="row">
-            <div class="form-group flex-1">
-              <label>Timing Template</label>
-              <select id="timing">
-                <option value="">Default</option>
-                <option value="-T0">T0 (Paranoid)</option>
-                <option value="-T1">T1 (Sneaky)</option>
-                <option value="-T2">T2 (Polite)</option>
-                <option value="-T3">T3 (Normal)</option>
-                <option value="-T4">T4 (Aggressive)</option>
-                <option value="-T5">T5 (Insane)</option>
-              </select>
-            </div>
-            <div class="form-group" style="width: 120px;">
-              <label>Max Retries</label>
-              <input id="max-retries" type="number" placeholder="3" />
-            </div>
-          </div>
-          <div class="options-grid" style="margin-top: 10px;">
-            <label class="checkbox-tile"><input type="checkbox" id="frag" data-arg="-f"> <span>Fragment (-f)</span></label>
-            <label class="checkbox-tile"><input type="checkbox" id="mtu" data-arg="--mtu"> <span>MTU</span></label>
-            <label class="checkbox-tile"><input type="checkbox" id="decoy" data-arg="-D"> <span>Decoy (-D)</span></label>
-            <label class="checkbox-tile"><input type="checkbox" id="spoof" data-arg="-S"> <span>Spoof (-S)</span></label>
-          </div>
-          <div class="row" style="margin-top: 12px;">
-            <input id="decoy-list" type="text" placeholder="Decoy IPs..." class="flex-1" />
-            <input id="spoof-ip" type="text" placeholder="Spoof Source IP..." class="flex-1" />
-          </div>
-        </div>
-
-        <div class="section">
-          <h3>Output Settings</h3>
-          <div class="options-grid">
-            <label class="checkbox-tile"><input type="checkbox" id="out-normal" data-arg="-oN"> <span>Normal (-oN)</span></label>
-            <label class="checkbox-tile"><input type="checkbox" id="out-xml" data-arg="-oX"> <span>XML (-oX)</span></label>
-            <label class="checkbox-tile"><input type="checkbox" id="out-all" data-arg="-oA"> <span>All Formats (-oA)</span></label>
-            <label class="checkbox-tile"><input type="checkbox" id="out-grep" data-arg="-oG"> <span>Grepable (-oG)</span></label>
-          </div>
-          <div class="row" style="margin-top: 12px;">
-            <div class="form-group flex-1">
-              <label>Filename</label>
-              <input id="out-file" type="text" placeholder="scan_results" />
-            </div>
-            <div class="form-group" style="width: 120px;">
-              <label>Verbosity</label>
-              <select id="verbosity">
-                <option value="">None</option>
-                <option value="-v">-v</option>
-                <option value="-vv">-vv</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <div class="section">
-          <h3>Misc Options</h3>
-          <div class="options-grid">
-            <label class="checkbox-tile"><input type="checkbox" id="traceroute" data-arg="--traceroute"> <span>Traceroute</span></label>
-            <label class="checkbox-tile"><input type="checkbox" id="reason" data-arg="--reason"> <span>Show Reason</span></label>
-            <label class="checkbox-tile"><input type="checkbox" id="open-only" data-arg="--open"> <span>Open Only</span></label>
-            <label class="checkbox-tile"><input type="checkbox" id="debug" data-arg="-d"> <span>Debug Mode</span></label>
-          </div>
-        </div>
-      </div>
-
-      <div class="preview-column">
-        <div class="card preview-card">
-          <h3 style="margin-top:0; color: white;">Command Preview</h3>
-          <div id="generated" class="code-box"># Configure options to see the command...</div>
-          
-          <button class="btn btn-primary" id="generate" style="width: 100%; justify-content: center; margin-bottom: 12px;">
-            GENERATE COMMAND
-          </button>
-          
-          <div class="row">
-            <button class="btn btn-secondary flex-1" id="copy" style="justify-content: center;">Copy</button>
-            <button class="btn btn-secondary flex-1" id="download" style="justify-content: center;">Save .sh</button>
-          </div>
-
-          <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border);">
-    <label style="font-weight: bold; color: #d9534f;">Important Legal Disclaimer</label>
-    <p class="hint" style="line-height: 1.6;">
-        <strong>Ethical Usage:</strong> This tool is designed for educational purposes and authorized security auditing only. Use Nmap responsibly. You must obtain explicit, written permission from the network owner before performing any reconnaissance or vulnerability scanning. 
-        <br><br>
-        <strong>Legal Compliance:</strong> Unauthorized access or scanning of private networks may violate local and international laws (such as the Computer Fraud and Abuse Act or GDPR). Users are solely responsible for ensuring their actions comply with applicable regulations.
-        <br><br>
-        <strong>Liability:</strong> The developers and providers of this platform assume no liability for any misuse, data loss, or service disruptions caused by the use of these tools.
-    </p>
-</div>
-
-        </div>
+  <!-- ===================== TOPBAR ===================== -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">◈</div>
+      <div>
+        <h1>ScanCraft</h1>
+        <p>Advanced Nmap command builder — reconnaissance, exploitation &amp; reporting</p>
       </div>
     </div>
+    <div class="top-actions">
+      <button class="btn ghost sm" id="btn-share" title="Copy a shareable link">🔗 Share</button>
+      <button class="btn ghost sm" id="btn-theme" title="Toggle theme">🌙</button>
+      <button class="btn ghost sm danger" id="btn-reset" title="Reset everything">↺ Reset</button>
+    </div>
+  </header>
 
-    <footer>
-      &copy; 2026 Nmap CLI Generator Tool • Optimized for Security Professionals
-    </footer>
+  <!-- ===================== PRESETS ===================== -->
+  <div class="presets" id="presets"></div>
+
+  <!-- ===================== MAIN ===================== -->
+  <div class="layout">
+
+    <main class="col-main">
+      <div class="toolbar">
+        <div class="search-wrap">
+          <span>🔍</span>
+          <input id="search" type="text"
+            placeholder="Filter options… try “udp”, “script”, “idle”, “output”, “evasion”"
+            autocomplete="off">
+        </div>
+        <button class="btn ghost sm" id="btn-expand">Expand all</button>
+        <button class="btn ghost sm" id="btn-collapse">Collapse all</button>
+      </div>
+      <div id="options"></div>
+    </main>
+
+    <!-- ===================== PREVIEW ===================== -->
+    <aside class="col-side">
+      <div class="card">
+        <div class="preview-head">
+          <h2>Command Preview</h2>
+          <label class="switch" title="Rebuild as you change options">
+            <input type="checkbox" id="live" checked> Live
+          </label>
+        </div>
+
+        <pre id="cmd" class="cmd-box"><span class="muted"># Configure options to build your command…</span></pre>
+
+        <div id="alerts"></div>
+
+        <div class="actions">
+          <button class="btn primary block" id="btn-generate">⚡ Generate Command</button>
+          <div class="row">
+            <button class="btn" id="btn-copy">📋 Copy</button>
+            <button class="btn" id="btn-download">💾 Save .sh</button>
+          </div>
+        </div>
+
+        <!-- Explanation -->
+        <div class="explain" id="explain-wrap">
+          <h3>Command Breakdown</h3>
+          <div class="explain-list" id="explain">
+            <div class="explain-item"><span style="color:var(--text-4);font-style:italic">Generate a command to see its breakdown.</span></div>
+          </div>
+        </div>
+
+        <!-- History -->
+        <div class="history-wrap">
+          <h3>Recent Commands</h3>
+          <div class="history" id="history"></div>
+        </div>
+
+        <!-- Disclaimer -->
+        <details class="disclaimer">
+          <summary>IMPORTANT LEGAL DISCLAIMER</summary>
+          <p><strong>Ethical usage:</strong> This tool exists for education and authorised
+          security auditing only. You must obtain explicit written permission from the
+          network owner before performing any reconnaissance or vulnerability scanning.</p>
+          <p><strong>Legal compliance:</strong> Unauthorised scanning may violate local and
+          international law (CFAA, GDPR, and equivalents). You alone are responsible for
+          ensuring your actions are lawful.</p>
+          <p><strong>Liability:</strong> The authors assume no liability for misuse, data
+          loss, or service disruption caused by commands generated here.</p>
+        </details>
+      </div>
+    </aside>
+
   </div>
 
-  <script>
-    /* Logic remains identical to original for full functionality compatibility */
-    const $ = id => document.getElementById(id);
-    const qAll = sel => Array.from(document.querySelectorAll(sel));
+  <footer>
+    &copy; 2026 ScanCraft · Advanced Nmap Command Builder ·
+    <kbd>Ctrl</kbd>+<kbd>Enter</kbd> copy · <kbd>Ctrl</kbd>+<kbd>K</kbd> search
+  </footer>
+</div>
 
-    function collectOptions(){
-      const args = [];
-      const target = $('target').value.trim();
-      if(!target) return { error: 'Please enter a target host or IP.' };
+<div id="toasts"></div>
 
-      qAll('input[type=checkbox][data-arg]').forEach(cb=>{
-        if(cb.checked){
-          const arg = cb.getAttribute('data-arg');
-          args.push(arg);
-        }
+<script>
+/* ==============================================================
+   0. HELPERS
+   ============================================================== */
+const $  = id => document.getElementById(id);
+const $$ = sel => Array.from(document.querySelectorAll(sel));
+const esc = s => String(s).replace(/[&<>"']/g, c =>
+  ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const q = v => (/\s/.test(v) && !/^["'].*["']$/.test(v)) ? `"${v}"` : v;
+
+/* ==============================================================
+   1. SCHEMA — comprehensive Nmap option definitions
+   ============================================================== */
+const SCHEMA = [
+
+/* ============================================================
+   TARGET SPECIFICATION
+   ============================================================ */
+{
+  id:'target', title:'Target Specification', icon:'🎯', open:true,
+  badge:'Required',
+  options:[
+    {id:'target', type:'target', wide:true, label:'Target host / IP / CIDR',
+     placeholder:'192.168.1.0/24  or  scanme.nmap.org',
+     hint:'Space- or comma-separated for multiple targets. Accepts CIDR, ranges, IPv6.'},
+    {id:'targetFile', type:'text', arg:'-iL', label:'Target list file',
+     placeholder:'targets.txt', hint:'Read targets from a file (-iL).'},
+    {id:'randomHosts', type:'number', arg:'-iR', label:'Random hosts',
+     placeholder:'100', min:1, max:100000,
+     hint:'Scan N random internet hosts. Use 0 for unlimited.'},
+    {id:'exclude', type:'text', arg:'--exclude', label:'Exclude hosts',
+     placeholder:'192.168.1.5,192.168.1.7'},
+    {id:'excludeFile', type:'text', arg:'--excludefile', label:'Exclude file',
+     placeholder:'exclude.txt'},
+    {id:'ipv6', type:'check', arg:'-6', tag:'-6', label:'IPv6 scanning'},
+    {id:'noDns', type:'check', arg:'-n', tag:'-n', label:'Never resolve DNS',
+     hint:'Faster — skips reverse DNS lookups.'},
+    {id:'alwaysDns', type:'check', arg:'-R', tag:'-R', label:'Always resolve DNS',
+     hint:'Resolve even offline hosts.'},
+    {id:'systemDns', type:'check', arg:'--system-dns', tag:'--system-dns', label:'Use system resolver',
+     hint:'May be slower for large scans.'},
+    {id:'dnsServers', type:'text', arg:'--dns-servers', label:'Custom DNS servers',
+     placeholder:'8.8.8.8,1.1.1.1', span2:true},
+    {id:'nonInteractive', type:'check', arg:'--noninteractive', tag:'--noninteractive', label:'Non-interactive mode',
+     hint:'Disable runtime keyboard interaction.'}
+  ]
+},
+
+/* ============================================================
+   HOST DISCOVERY
+   ============================================================ */
+{
+  id:'discovery', title:'Host Discovery', icon:'📡',
+  options:[
+    {id:'sL', type:'check', arg:'-sL', tag:'-sL', label:'List scan (no packets)',
+     hint:'List targets without sending packets.'},
+    {id:'sn', type:'check', arg:'-sn', tag:'-sn', label:'Ping scan only',
+     hint:'Disable port scan — discover live hosts.'},
+    {id:'Pn', type:'check', arg:'-Pn', tag:'-Pn', label:'Treat all hosts as online',
+     hint:'Skip host discovery — scan everything.'},
+    {id:'ps', type:'checkValue', arg:'-PS', tag:'-PS', label:'TCP SYN ping', placeholder:'80,443'},
+    {id:'pa', type:'checkValue', arg:'-PA', tag:'-PA', label:'TCP ACK ping', placeholder:'80,443'},
+    {id:'pu', type:'checkValue', arg:'-PU', tag:'-PU', label:'UDP ping', placeholder:'53,161'},
+    {id:'py', type:'checkValue', arg:'-PY', tag:'-PY', label:'SCTP ping', placeholder:'80'},
+    {id:'pe', type:'check', arg:'-PE', tag:'-PE', label:'ICMP echo request'},
+    {id:'pp', type:'check', arg:'-PP', tag:'-PP', label:'ICMP timestamp'},
+    {id:'pm', type:'check', arg:'-PM', tag:'-PM', label:'ICMP address mask'},
+    {id:'po', type:'check', arg:'-PO', tag:'-PO', label:'IP protocol ping',
+     hint:'Protocols 1, 2, 4 by default.'},
+    {id:'pr', type:'check', arg:'-PR', tag:'-PR', label:'ARP ping (LAN)',
+     hint:'Fastest for local networks.'},
+    {id:'noArp', type:'check', arg:'--disable-arp-ping', tag:'--disable-arp-ping', label:'Disable ARP ping'},
+    {id:'traceroute', type:'check', arg:'--traceroute', tag:'--traceroute', label:'Trace hops'},
+    {id:'discoveryIgnoreRst', type:'check', arg:'--discovery-ignore-rst', tag:'--discovery-ignore-rst', label:'Ignore RST on discovery'}
+  ]
+},
+
+/* ============================================================
+   SCAN TECHNIQUES
+   ============================================================ */
+{
+  id:'techniques', title:'Scan Techniques', icon:'🧪',
+  options:[
+    {id:'sS', type:'check', arg:'-sS', tag:'-sS', label:'TCP SYN (stealth)',
+     hint:'Default for privileged users. Never completes handshake.'},
+    {id:'sT', type:'check', arg:'-sT', tag:'-sT', label:'TCP connect()',
+     hint:'Default for unprivileged users. Completes full handshake.'},
+    {id:'sA', type:'check', arg:'-sA', tag:'-sA', label:'TCP ACK',
+     hint:'Maps firewall rules — filtered vs unfiltered.'},
+    {id:'sW', type:'check', arg:'-sW', tag:'-sW', label:'TCP Window',
+     hint:'Like ACK scan but inspects TCP window size.'},
+    {id:'sM', type:'check', arg:'-sM', tag:'-sM', label:'TCP Maimon',
+     hint:'FIN/ACK probes — works on some BSD-derived systems.'},
+    {id:'sU', type:'check', arg:'-sU', tag:'-sU', label:'UDP scan',
+     hint:'Slower but necessary for DNS, SNMP, DHCP.'},
+    {id:'sN', type:'check', arg:'-sN', tag:'-sN', label:'TCP Null',
+     hint:'No flags set — evades some firewalls.'},
+    {id:'sF', type:'check', arg:'-sF', tag:'-sF', label:'TCP FIN',
+     hint:'FIN flag only — stealthy.'},
+    {id:'sX', type:'check', arg:'-sX', tag:'-sX', label:'TCP Xmas',
+     hint:'FIN, PSH, URG flags set.'},
+    {id:'sY', type:'check', arg:'-sY', tag:'-sY', label:'SCTP INIT',
+     hint:'SCTP INIT chunk scan.'},
+    {id:'sZ', type:'check', arg:'-sZ', tag:'-sZ', label:'SCTP COOKIE-ECHO',
+     hint:'SCTP COOKIE-ECHO scan.'},
+    {id:'sO', type:'check', arg:'-sO', tag:'-sO', label:'IP protocol scan',
+     hint:'Determine which IP protocols are supported.'},
+    {id:'sI', type:'checkValue', arg:'-sI', tag:'-sI', label:'Idle / zombie scan',
+     placeholder:'zombie.example.com', span2:true,
+     hint:'Fully blind scan — extremely stealthy. Requires a suitable idle host.'},
+    {id:'scanflags', type:'text', arg:'--scanflags', label:'Custom TCP flags',
+     placeholder:'SYNACKURG (or numeric)'},
+    {id:'bounce', type:'text', arg:'-b', label:'FTP bounce relay',
+     placeholder:'user:pass@ftp.example.com', span2:true},
+    {id:'sendEth', type:'check', arg:'--send-eth', tag:'--send-eth', label:'Force Ethernet frames'},
+    {id:'sendIp', type:'check', arg:'--send-ip', tag:'--send-ip', label:'Force raw IP packets'}
+  ]
+},
+
+/* ============================================================
+   PORTS & SERVICE DETECTION
+   ============================================================ */
+{
+  id:'ports', title:'Ports & Service Detection', icon:'🔌',
+  options:[
+    {id:'ports', type:'text', arg:'-p', label:'Port range',
+     placeholder:'80,443  or  1-1024  or  -',
+     hint:'Use “-” for all 65535 ports.'},
+    {id:'excludePorts', type:'text', arg:'--exclude-ports', label:'Exclude ports',
+     placeholder:'22,3389'},
+    {id:'topPorts', type:'number', arg:'--top-ports', label:'Top N ports',
+     placeholder:'100', min:1, max:65535},
+    {id:'portRatio', type:'number', arg:'--port-ratio', label:'Port ratio',
+     placeholder:'0.1', hint:'Scan ports more common than this ratio.'},
+    {id:'fast', type:'check', arg:'-F', tag:'-F', label:'Fast mode (top 100)'},
+    {id:'sequential', type:'check', arg:'-r', tag:'-r', label:'Sequential port order'},
+    {id:'svcDetect', type:'check', arg:'-sV', tag:'-sV', label:'Service / version detect',
+     hint:'Identify software and versions on open ports.'},
+    {id:'versionIntensity', type:'number', arg:'--version-intensity', label:'Version intensity',
+     placeholder:'0-9', min:0, max:9,
+     hint:'0 = light, 9 = try every probe.'},
+    {id:'versionLight', type:'check', arg:'--version-light', tag:'--version-light', label:'Light version probe'},
+    {id:'versionAll', type:'check', arg:'--version-all', tag:'--version-all', label:'Try every probe'},
+    {id:'versionTrace', type:'check', arg:'--version-trace', tag:'--version-trace', label:'Trace version probes'}
+  ]
+},
+
+/* ============================================================
+   OS DETECTION
+   ============================================================ */
+{
+  id:'os', title:'OS Detection & Fingerprinting', icon:'🖥️',
+  options:[
+    {id:'osDetect', type:'check', arg:'-O', tag:'-O', label:'OS detection',
+     hint:'TCP/IP stack fingerprinting.'},
+    {id:'osScanLimit', type:'check', arg:'--osscan-limit', tag:'--osscan-limit', label:'Limit OS targets',
+     hint:'Only scan hosts with open + closed ports.'},
+    {id:'osScanGuess', type:'check', arg:'--osscan-guess', tag:'--osscan-guess', label:'Aggressive OS guess',
+     hint:'Show closest matches even when uncertain.'},
+    {id:'maxOsTries', type:'number', arg:'--max-os-tries', label:'Max OS tries',
+     placeholder:'5', min:1, max:20},
+    {id:'aggressive', type:'check', arg:'-A', tag:'-A', label:'Aggressive (-A)',
+     hint:'Enables -O, -sV, -sC and traceroute together.'}
+  ]
+},
+
+/* ============================================================
+   NSE SCRIPTING
+   ============================================================ */
+{
+  id:'nse', title:'NSE Scripting Engine', icon:'🧬',
+  options:[
+    {id:'defaultScripts', type:'check', arg:'-sC', tag:'-sC', label:'Default scripts',
+     hint:'Equivalent to --script=default.'},
+    {id:'script', type:'text', arg:'--script', label:'NSE script / category',
+     placeholder:'vuln, safe, http-title, "not intrusive"', wide:true,
+     hint:'Comma-separated list. Categories: auth, broadcast, brute, default, discovery, dos, exploit, external, fuzzer, intrusive, malware, safe, version, vuln.'},
+    {id:'scriptArgs', type:'text', arg:'--script-args', label:'Script arguments',
+     placeholder:'user=admin pass=admin', wide:true},
+    {id:'scriptArgsFile', type:'text', arg:'--script-args-file', label:'Script args file',
+     placeholder:'args.txt'},
+    {id:'scriptTrace', type:'check', arg:'--script-trace', tag:'--script-trace', label:'Trace script I/O'},
+    {id:'scriptUpdate', type:'check', arg:'--script-updatedb', tag:'--script-updatedb', label:'Update script DB'},
+    {id:'scriptHelp', type:'checkValue', arg:'--script-help', tag:'--script-help', label:'Script help',
+     placeholder:'http-title', span2:true,
+     hint:'Show description for selected scripts.'}
+  ],
+  extraHTML:`
+    <div style="margin-top:10px">
+      <div style="font-size:10.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-4);margin-bottom:6px">Quick script categories</div>
+      <div class="script-cats" id="script-cats">
+        ${['auth','broadcast','brute','default','discovery','dos','exploit','external','fuzzer','intrusive','malware','safe','version','vuln']
+          .map(c=>`<span class="script-cat" data-cat="${c}">${c}</span>`).join('')}
+      </div>
+    </div>`
+},
+
+/* ============================================================
+   TIMING & PERFORMANCE
+   ============================================================ */
+{
+  id:'timing', title:'Timing & Performance', icon:'⏱️',
+  options:[
+    {id:'timing', type:'select', label:'Timing template', defaultLabel:'Default (T3)', choices:[
+      {v:'-T0', t:'T0 — Paranoid (IDS evasion)'},
+      {v:'-T1', t:'T1 — Sneaky (IDS evasion)'},
+      {v:'-T2', t:'T2 — Polite (less bandwidth)'},
+      {v:'-T3', t:'T3 — Normal (default)'},
+      {v:'-T4', t:'T4 — Aggressive (fast, reliable nets)'},
+      {v:'-T5', t:'T5 — Insane (very fast, may lose accuracy)'}
+    ]},
+    {id:'maxRetries', type:'number', arg:'--max-retries', label:'Max retries',
+     placeholder:'3', min:0, max:10},
+    {id:'hostTimeout', type:'text', arg:'--host-timeout', label:'Host timeout',
+     placeholder:'30m, 900s'},
+    {id:'scanDelay', type:'text', arg:'--scan-delay', label:'Scan delay',
+     placeholder:'100ms'},
+    {id:'maxScanDelay', type:'text', arg:'--max-scan-delay', label:'Max scan delay',
+     placeholder:'1s'},
+    {id:'minRate', type:'number', arg:'--min-rate', label:'Min packet rate',
+     placeholder:'100', min:1},
+    {id:'maxRate', type:'number', arg:'--max-rate', label:'Max packet rate',
+     placeholder:'1000', min:1},
+    {id:'minParallelism', type:'number', arg:'--min-parallelism', label:'Min parallelism',
+     placeholder:'10', min:1},
+    {id:'maxParallelism', type:'number', arg:'--max-parallelism', label:'Max parallelism',
+     placeholder:'100', min:1},
+    {id:'minHostgroup', type:'number', arg:'--min-hostgroup', label:'Min host group',
+     placeholder:'32', min:1},
+    {id:'maxHostgroup', type:'number', arg:'--max-hostgroup', label:'Max host group',
+     placeholder:'256', min:1},
+    {id:'defeatRst', type:'check', arg:'--defeat-rst-ratelimit', tag:'--defeat-rst-ratelimit', label:'Defeat RST rate limit'}
+  ]
+},
+
+/* ============================================================
+   FIREWALL / IDS EVASION
+   ============================================================ */
+{
+  id:'evasion', title:'Firewall / IDS Evasion', icon:'🧱', badge:'Risky',
+  options:[
+    {id:'fragment', type:'check', arg:'-f', tag:'-f', label:'Fragment packets',
+     hint:'Split packets into 8-byte chunks.'},
+    {id:'mtu', type:'number', arg:'--mtu', label:'Custom MTU',
+     placeholder:'24 (multiple of 8)', min:8, max:65535},
+    {id:'decoy', type:'text', arg:'-D', label:'Decoys',
+     placeholder:'RND:10  or  1.2.3.4,5.6.7.8,ME', wide:true,
+     hint:'Hide your scan among decoy IPs. Use ME to place your real IP.'},
+    {id:'spoofIp', type:'text', arg:'-S', label:'Spoof source IP',
+     placeholder:'10.0.0.99'},
+    {id:'iface', type:'text', arg:'-e', label:'Network interface',
+     placeholder:'eth0'},
+    {id:'sourcePort', type:'text', arg:'-g', label:'Source port',
+     placeholder:'53',
+     hint:'Use a trusted port like 53 or 80 to bypass filters.'},
+    {id:'dataLength', type:'number', arg:'--data-length', label:'Append random data',
+     placeholder:'15', min:0, max:65535},
+    {id:'ttl', type:'number', arg:'--ttl', label:'Custom TTL',
+     placeholder:'64', min:1, max:255},
+    {id:'spoofMac', type:'text', arg:'--spoof-mac', label:'Spoof MAC',
+     placeholder:'0, Apple, 00:11:22:33:44:55'},
+    {id:'proxies', type:'text', arg:'--proxies', label:'HTTP/SOCKS proxies',
+     placeholder:'http://127.0.0.1:8080', wide:true},
+    {id:'badsum', type:'check', arg:'--badsum', tag:'--badsum', label:'Send bad checksums',
+     hint:'For firewall testing only — responses unreliable.'},
+    {id:'randomizeHosts', type:'check', arg:'--randomize-hosts', tag:'--randomize-hosts', label:'Randomize target order'}
+  ]
+},
+
+/* ============================================================
+   OUTPUT & REPORTING
+   ============================================================ */
+{
+  id:'output', title:'Output & Reporting', icon:'💾',
+  options:[
+    {id:'outFile', type:'text', arg:null, noArg:true, wide:true,
+     label:'Output base filename', placeholder:'scan_result',
+     hint:'Used by -oN / -oX / -oG / -oA below.'},
+    {id:'oN', type:'check', label:'Normal output', tag:'-oN',
+     build:()=> state.oN ? `-oN ${q(baseName()+'.nmap')}` : null},
+    {id:'oX', type:'check', label:'XML output', tag:'-oX',
+     build:()=> state.oX ? `-oX ${q(baseName()+'.xml')}` : null},
+    {id:'oG', type:'check', label:'Grepable output', tag:'-oG',
+     build:()=> state.oG ? `-oG ${q(baseName()+'.gnmap')}` : null},
+    {id:'oS', type:'check', label:'Script kiddie output', tag:'-oS',
+     build:()=> state.oS ? `-oS ${q(baseName()+'.txt')}` : null},
+    {id:'oA', type:'check', label:'All formats', tag:'-oA',
+     build:()=> state.oA ? `-oA ${q(baseName())}` : null},
+    {id:'appendOutput', type:'check', arg:'--append-output', tag:'--append-output', label:'Append to files'},
+    {id:'verbosity', type:'select', label:'Verbosity', defaultLabel:'Normal', choices:[
+      {v:'-v',   t:'-v   (verbose)'},
+      {v:'-vv',  t:'-vv  (more verbose)'},
+      {v:'-vvv', t:'-vvv (maximum)'}
+    ]},
+    {id:'debug', type:'select', label:'Debug level', defaultLabel:'Off', choices:[
+      {v:'-d',  t:'-d   (debug)'},
+      {v:'-dd', t:'-dd  (deep debug)'}
+    ]},
+    {id:'reason', type:'check', arg:'--reason', tag:'--reason', label:'Show port state reason'},
+    {id:'openOnly', type:'check', arg:'--open', tag:'--open', label:'Show open ports only'},
+    {id:'packetTrace', type:'check', arg:'--packet-trace', tag:'--packet-trace', label:'Trace packets'},
+    {id:'iflist', type:'check', arg:'--iflist', tag:'--iflist', label:'List interfaces'},
+    {id:'webxml', type:'check', arg:'--webxml', tag:'--webxml', label:'Reference Nmap.org XSL'},
+    {id:'stylesheet', type:'text', arg:'--stylesheet', label:'XSL stylesheet path',
+     placeholder:'https://nmap.org/svn/docs/nmap.xsl', span2:true},
+    {id:'noStylesheet', type:'check', arg:'--no-stylesheet', tag:'--no-stylesheet', label:'Omit XSL from XML'}
+  ]
+}
+];
+
+const FLAT = SCHEMA.flatMap(s => s.options);
+const OPT_BY_ID = Object.fromEntries(FLAT.map(o => [o.id, o]));
+
+/* Human-readable descriptions for command breakdown */
+const ARG_DESC = {
+  '-sS':'TCP SYN (stealth) scan','-sT':'TCP connect() scan','-sU':'UDP scan',
+  '-sA':'TCP ACK scan','-sW':'TCP window scan','-sM':'TCP Maimon scan',
+  '-sN':'TCP Null scan','-sF':'TCP FIN scan','-sX':'TCP Xmas scan',
+  '-sY':'SCTP INIT scan','-sZ':'SCTP COOKIE-ECHO scan','-sO':'IP protocol scan',
+  '-sn':'Ping scan (host discovery only)','-Pn':'Treat all hosts as online',
+  '-PS':'TCP SYN ping','-PA':'TCP ACK ping','-PU':'UDP ping','-PY':'SCTP ping',
+  '-PE':'ICMP echo ping','-PP':'ICMP timestamp ping','-PM':'ICMP address mask ping',
+  '-PO':'IP protocol ping','-PR':'ARP ping','-sL':'List scan',
+  '-sV':'Service / version detection','-O':'OS detection','-A':'Aggressive scan',
+  '-sC':'Default NSE scripts','-F':'Fast scan (top 100 ports)',
+  '-r':'Sequential port order','-6':'IPv6 scanning','-n':'No DNS resolution',
+  '-R':'Always resolve DNS','-f':'Fragment packets','-D':'Decoy scan',
+  '-S':'Spoof source IP','-e':'Network interface','-g':'Source port',
+  '-b':'FTP bounce relay','-iL':'Target list from file','-iR':'Random hosts',
+  '-T0':'Paranoid timing','-T1':'Sneaky timing','-T2':'Polite timing',
+  '-T3':'Normal timing','-T4':'Aggressive timing','-T5':'Insane timing',
+  '-v':'-v Verbose output','-vv':'-vv More verbose','-vvv':'-vvv Maximum verbosity',
+  '-d':'Debug mode','-dd':'Deep debug mode','--reason':'Show port state reason',
+  '--open':'Show open ports only','--traceroute':'Trace network path',
+  '--script':'NSE script selection','--script-args':'NSE script arguments',
+  '--version-intensity':'Version detection intensity','--version-all':'Try every version probe',
+  '--version-trace':'Trace version detection','--max-retries':'Maximum retries',
+  '--host-timeout':'Per-host timeout','--min-rate':'Minimum packet rate',
+  '--max-rate':'Maximum packet rate','--min-parallelism':'Minimum parallelism',
+  '--max-parallelism':'Maximum parallelism','--min-hostgroup':'Minimum host group',
+  '--max-hostgroup':'Maximum host group','--exclude':'Exclude hosts',
+  '--excludefile':'Exclude hosts from file','--dns-servers':'Custom DNS servers',
+  '--system-dns':'Use system DNS resolver','--disable-arp-ping':'Disable ARP ping',
+  '--randomize-hosts':'Randomize target order','--data-length':'Append random data',
+  '--ttl':'Custom TTL','--spoof-mac':'Spoof MAC address','--proxies':'Use proxies',
+  '--badsum':'Bad checksums (firewall testing)','--mtu':'Custom MTU',
+  '--packet-trace':'Trace packets','--iflist':'List interfaces',
+  '--append-output':'Append to output files','--no-stylesheet':'Omit XSL stylesheet'
+};
+
+/* ==============================================================
+   2. STATE
+   ============================================================== */
+const STORE_KEY = 'scancraft_state_v3';
+const HIST_KEY  = 'scancraft_history_v3';
+const THEME_KEY = 'scancraft_theme';
+
+let state = {};
+let history = [];
+let liveMode = true;
+let lastResult = null;
+let activePreset = null;
+
+function baseName(){
+  const v = (state.outFile || '').trim();
+  return v || 'scan_result';
+}
+function saveState(){
+  try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){}
+}
+function loadState(){
+  if(location.hash.length > 1){
+    try{
+      const parsed = JSON.parse(decodeURIComponent(escape(atob(location.hash.slice(1)))));
+      if(parsed && typeof parsed === 'object'){ state = parsed; return; }
+    }catch(e){}
+  }
+  try{
+    const raw = localStorage.getItem(STORE_KEY);
+    if(raw) state = JSON.parse(raw) || {};
+  }catch(e){ state = {}; }
+}
+function encodeShare(s){
+  return btoa(unescape(encodeURIComponent(JSON.stringify(s))));
+}
+
+/* ==============================================================
+   3. RENDER OPTIONS
+   ============================================================== */
+function searchText(o){
+  return (o.label + ' ' + (o.tag || '') + ' ' + (o.arg || '') + ' ' + o.id + ' ' + (o.hint || '')).toLowerCase();
+}
+
+function renderOption(o){
+  const st = esc(searchText(o));
+  const wide = o.wide ? ' wide' : '';
+  const span2 = o.span2 ? ' span2' : '';
+
+  if(o.type === 'check'){
+    return `<label class="tile${wide}${span2}" data-search="${st}">
+      <input type="checkbox" data-id="${o.id}">
+      <span class="tile-body">
+        <span class="tile-label">${esc(o.label)}</span>
+        <span class="tile-tag">${esc(o.tag || o.arg)}</span>
+      </span>
+    </label>`;
+  }
+
+  if(o.type === 'checkValue'){
+    return `<div class="tile tile-col${wide}${span2}" data-search="${st}">
+      <label class="tile-head">
+        <input type="checkbox" data-id="${o.id}">
+        <span class="tile-label">${esc(o.label)}</span>
+        <span class="tile-tag">${esc(o.tag || o.arg)}</span>
+      </label>
+      <input type="text" data-id="${o.id}_val" placeholder="${esc(o.placeholder || '')}">
+    </div>`;
+  }
+
+  if(o.type === 'select'){
+    return `<div class="opt${wide}${span2}" data-search="${st}">
+      <label for="f_${o.id}">${esc(o.label)}</label>
+      <select id="f_${o.id}" data-id="${o.id}">
+        <option value="">${esc(o.defaultLabel || 'Default')}</option>
+        ${o.choices.map(c => `<option value="${esc(c.v)}">${esc(c.t)}</option>`).join('')}
+      </select>
+      ${o.hint ? `<div class="hint">${esc(o.hint)}</div>` : ''}
+    </div>`;
+  }
+
+  const isNum = o.type === 'number';
+  return `<div class="opt${wide}${span2}" data-search="${st}">
+    <label for="f_${o.id}">${esc(o.label)}${o.arg ? ` <code>${esc(o.arg)}</code>` : ''}</label>
+    <input id="f_${o.id}" data-id="${o.id}" type="${isNum ? 'number' : 'text'}"
+      placeholder="${esc(o.placeholder || '')}"
+      ${o.min != null ? `min="${o.min}"` : ''}${o.max != null ? ` max="${o.max}"` : ''}
+      autocomplete="off" spellcheck="false">
+    ${o.hint ? `<div class="hint">${esc(o.hint)}</div>` : ''}
+  </div>`;
+}
+
+function renderOptions(){
+  $('options').innerHTML = SCHEMA.map(sec => `
+    <details class="section" ${sec.open ? 'open' : ''} data-section="${sec.id}">
+      <summary>
+        <span class="sec-icon">${sec.icon}</span>
+        <span class="sec-title">${esc(sec.title)}</span>
+        ${sec.badge ? `<span class="sec-badge">${esc(sec.badge)}</span>` : ''}
+        <span class="sec-count" data-count="${sec.id}"></span>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="sec-body">
+        <div class="opt-grid">${sec.options.map(renderOption).join('')}</div>
+        ${sec.extraHTML || ''}
+      </div>
+    </details>
+  `).join('');
+}
+
+/* ==============================================================
+   4. STATE <-> DOM
+   ============================================================== */
+function readState(){
+  $$('#options [data-id]').forEach(el => {
+    state[el.dataset.id] = el.type === 'checkbox' ? el.checked : el.value;
+  });
+}
+function applyState(){
+  $$('#options [data-id]').forEach(el => {
+    const id = el.dataset.id;
+    if(!(id in state)) return;
+    if(el.type === 'checkbox') el.checked = !!state[id];
+    else el.value = state[id] ?? '';
+  });
+}
+
+/* ==============================================================
+   5. COMMAND BUILDER + VALIDATION
+   ============================================================== */
+function buildCommand(){
+  const errors = [], warnings = [], info = [], args = [];
+  const val = id => String(state[id] ?? '').trim();
+  const on  = id => !!state[id];
+
+  for(const o of FLAT){
+    if(o.type === 'target' || o.noArg) continue;
+    if(o.build){ const r = o.build(); if(r) args.push(r); continue; }
+
+    if(o.type === 'check'){
+      if(on(o.id)) args.push(o.arg);
+    } else if(o.type === 'checkValue'){
+      if(on(o.id)){
+        const v = val(o.id + '_val');
+        args.push(v ? o.arg + v.replace(/\s+/g, '') : o.arg);
+      }
+    } else if(o.type === 'text' || o.type === 'number'){
+      const v = val(o.id);
+      if(v) args.push(`${o.arg} ${q(v)}`);
+    } else if(o.type === 'select'){
+      const v = val(o.id);
+      if(v) args.push(v);
+    }
+  }
+
+  /* ---------- validation ---------- */
+  const target = val('target');
+  const tfile  = val('targetFile');
+  const random = val('randomHosts');
+  if(!target && !tfile && !random)
+    errors.push('Enter a target host / IP / CIDR, pick a target list file, or use random hosts.');
+
+  const scans = ['sS','sT','sA','sW','sM','sN','sF','sX','sY','sZ','sO','sI'].filter(on);
+  if(scans.length > 1)
+    warnings.push('Multiple scan techniques selected — Nmap honours only the last one.');
+  if(on('sn') && scans.length)
+    warnings.push('-sn performs host discovery only; port-scan flags will be ignored.');
+  if(on('sU') && scans.length)
+    warnings.push('Mixing UDP with TCP scans makes the scan significantly slower.');
+  if(on('sL') && scans.length)
+    warnings.push('-sL is a list-only scan; port-scan flags will be ignored.');
+  if(on('sI') && !val('sI_val'))
+    warnings.push('Idle scan requires a zombie host — set the zombie IP/hostname.');
+  if(on('versionAll') && !on('svcDetect'))
+    warnings.push('--version-all only has an effect together with -sV.');
+  if(val('versionIntensity') && !on('svcDetect'))
+    warnings.push('--version-intensity only applies with -sV.');
+  if(on('versionLight') && !on('svcDetect'))
+    warnings.push('--version-light only applies with -sV.');
+  if((on('osScanLimit') || on('osScanGuess') || val('maxOsTries')) && !on('osDetect'))
+    warnings.push('OS tuning flags require -O (OS detection).');
+  if(on('scriptTrace') && !on('script') && !on('defaultScripts'))
+    warnings.push('--script-trace only shows output when NSE scripts are enabled.');
+  if(on('scriptHelp') && !val('scriptHelp_val'))
+    warnings.push('--script-help needs a script name or category to show help for.');
+  if(on('badsum'))
+    warnings.push('--badsum is for firewall testing only; all responses will be unreliable.');
+  if(on('fragment') && val('mtu'))
+    warnings.push('Both -f and --mtu set — Nmap will use --mtu and ignore -f.');
+  if(on('decoy') && val('spoofIp'))
+    warnings.push('Decoys (-D) and spoofed source IP (-S) together can confuse results.');
+
+  /* ---------- informational ---------- */
+  if(on('oA') || on('oN') || on('oX') || on('oG') || on('oS'))
+    info.push('Output files will be written using base name: ' + baseName());
+  if(on('sU'))
+    info.push('UDP scans are slower and may report open|filtered for many ports.');
+  if(on('sI'))
+    info.push('Idle scan is completely blind — results depend on the zombie host behaving correctly.');
+
+  const risky = !!(val('spoofIp') || val('decoy') || on('badsum') || val('spoofMac') || val('bounce') || on('sI'));
+
+  const cmd = ['nmap', ...args, target].filter(Boolean).join(' ')
+                .replace(/\s+/g, ' ').trim();
+
+  return { cmd, errors, warnings, info, risky };
+}
+
+/* ==============================================================
+   6. PREVIEW RENDERING
+   ============================================================== */
+function highlight(cmd){
+  return cmd.split(/\s+/).map(tok => {
+    const t = esc(tok);
+    if(tok === 'nmap') return `<span class="t-cmd">${t}</span>`;
+    if(tok.startsWith('-')) return `<span class="t-flag">${t}</span>`;
+    if(/^[\d.,:\/\[\]]+$/.test(tok)) return `<span class="t-num">${t}</span>`;
+    if(tok.includes('=') || tok.includes(',')) return `<span class="t-script">${t}</span>`;
+    return `<span class="t-tgt">${t}</span>`;
+  }).join(' ');
+}
+
+function renderPreview(res){
+  const box = $('cmd');
+  if(res.errors.length){
+    box.innerHTML = `<span class="err"># ${esc(res.errors[0])}</span>`;
+  } else {
+    box.innerHTML = highlight(res.cmd);
+  }
+
+  let html = '';
+  if(res.errors.length){
+    html += `<div class="alert danger"><b>Errors</b><ul>${
+      res.errors.map(w => `<li>${esc(w)}</li>`).join('')
+    }</ul></div>`;
+  }
+  if(res.warnings.length){
+    html += `<div class="alert warn"><b>Warnings</b><ul>${
+      res.warnings.map(w => `<li>${esc(w)}</li>`).join('')
+    }</ul></div>`;
+  }
+  if(res.info.length){
+    html += `<div class="alert info"><b>Info</b><ul>${
+      res.info.map(w => `<li>${esc(w)}</li>`).join('')
+    }</ul></div>`;
+  }
+  if(res.risky && !res.errors.length){
+    html += `<div class="alert danger"><b>Authorisation required</b>
+      <p>This command uses spoofing, decoys, idle scanning or evasion flags.
+      Only run it against systems you own or have explicit written permission to test.</p></div>`;
+  }
+  $('alerts').innerHTML = html;
+
+  renderExplain(res.cmd, res.errors.length === 0);
+}
+
+/* ==============================================================
+   7. COMMAND EXPLANATION
+   ============================================================== */
+function renderExplain(cmd, valid){
+  const wrap = $('explain');
+  if(!valid || !cmd){
+    wrap.innerHTML = `<div class="explain-item"><span style="color:var(--text-4);font-style:italic">Generate a valid command to see its breakdown.</span></div>`;
+    return;
+  }
+
+  const parts = cmd.split(/\s+/);
+  const items = [];
+  let i = 0;
+
+  while(i < parts.length){
+    const tok = parts[i];
+    if(tok === 'nmap'){ i++; continue; }
+
+    // Match flag descriptions
+    if(tok.startsWith('--')){
+      // long flag — might have a value
+      let desc = ARG_DESC[tok];
+      let hasVal = false;
+      if(i + 1 < parts.length && !parts[i+1].startsWith('-') && !ARG_DESC[parts[i+1]]){
+        hasVal = true;
+      }
+      if(desc){
+        items.push({flag: tok, desc});
+      } else if(tok.startsWith('--script')){
+        items.push({flag: tok, desc: 'NSE script selection'});
+      } else if(tok.startsWith('--exclude')){
+        items.push({flag: tok, desc: 'Exclude targets'});
+      } else {
+        items.push({flag: tok, desc: 'Nmap option'});
+      }
+      i += hasVal ? 2 : 1;
+      continue;
+    }
+
+    if(tok.startsWith('-') && tok.length <= 4){
+      const desc = ARG_DESC[tok];
+      let hasVal = false;
+      if(i + 1 < parts.length && !parts[i+1].startsWith('-') && !ARG_DESC[parts[i+1]]){
+        hasVal = true;
+      }
+      items.push({flag: tok, desc: desc || 'Nmap option'});
+      i += hasVal ? 2 : 1;
+      continue;
+    }
+
+    // Target
+    items.push({flag: 'target', desc: 'Scan target: ' + tok});
+    i++;
+  }
+
+  if(!items.length){
+    wrap.innerHTML = `<div class="explain-item"><span style="color:var(--text-4);font-style:italic">No breakdown available.</span></div>`;
+    return;
+  }
+
+  wrap.innerHTML = items.map(it =>
+    `<div class="explain-item">
+      <code>${esc(it.flag)}</code>
+      <span>${esc(it.desc)}</span>
+    </div>`
+  ).join('');
+}
+
+/* ==============================================================
+   8. COUNTS + MAIN UPDATE
+   ============================================================== */
+function updateCounts(){
+  for(const sec of SCHEMA){
+    let n = 0;
+    for(const o of sec.options){
+      if(o.type === 'target') continue;
+      const v = state[o.id];
+      if(o.type === 'check' || o.type === 'checkValue'){ if(v) n++; }
+      else if(v != null && String(v).trim()) n++;
+    }
+    const el = document.querySelector(`[data-count="${sec.id}"]`);
+    if(el){
+      el.textContent = n || '';
+      el.classList.toggle('on', n > 0);
+    }
+  }
+}
+
+function update(){
+  readState();
+  saveState();
+  lastResult = buildCommand();
+  renderPreview(lastResult);
+  updateCounts();
+  updateActivePreset();
+}
+
+/* ==============================================================
+   9. PRESETS
+   ============================================================== */
+const PRESETS = [
+  {id:'ping',   icon:'📡', label:'Ping Sweep',
+   state:{sn:true, reason:true, noDns:true, pe:true, ps:true}},
+  {id:'quick',  icon:'⚡', label:'Quick SYN',
+   state:{sS:true, timing:'-T4', reason:true, openOnly:true}},
+  {id:'full',   icon:'🔎', label:'Full TCP',
+   state:{sS:true, ports:'1-65535', timing:'-T4', openOnly:true, reason:true}},
+  {id:'svc',    icon:'🧬', label:'Service + OS',
+   state:{sS:true, svcDetect:true, osDetect:true, defaultScripts:true, timing:'-T4', reason:true}},
+  {id:'vuln',   icon:'🛡️', label:'Vulnerability NSE',
+   state:{sS:true, svcDetect:true, script:'vuln', timing:'-T4', reason:true}},
+  {id:'safe',   icon:'🔒', label:'Safe Recon',
+   state:{sS:true, svcDetect:true, script:'safe', timing:'-T4', reason:true, openOnly:true}},
+  {id:'udp',    icon:'📶', label:'UDP Top 100',
+   state:{sU:true, topPorts:'100', timing:'-T4', reason:true}},
+  {id:'stealth',icon:'🥷', label:'Stealth / Slow',
+   state:{sS:true, timing:'-T2', fragment:true, noDns:true, randomizeHosts:true}},
+  {id:'evasion',icon:'🧱', label:'Firewall Evasion',
+   state:{sS:true, fragment:true, decoy:'RND:10', timing:'-T2', dataLength:'15', sourcePort:'53'}},
+  {id:'idle',   icon:'👻', label:'Idle Scan',
+   state:{sI:true, sI_val:'zombie.example.com', timing:'-T2', reason:true}},
+  {id:'aggro',  icon:'💥', label:'Aggressive -A',
+   state:{aggressive:true, timing:'-T4', reason:true, openOnly:true}},
+  {id:'discovery',icon:'🗺️', label:'Discovery Map',
+   state:{sn:true, pe:true, pp:true, pr:true, traceroute:true, reason:true}}
+];
+
+function renderPresets(){
+  $('presets').innerHTML = PRESETS.map(p =>
+    `<button class="preset" data-preset="${p.id}">${p.icon} ${esc(p.label)}</button>`
+  ).join('');
+}
+
+function applyPreset(id){
+  const p = PRESETS.find(x => x.id === id);
+  if(!p) return;
+
+  const keep = { target: state.target, targetFile: state.targetFile };
+
+  for(const o of FLAT){
+    if(o.type === 'check' || o.type === 'checkValue') state[o.id] = false;
+    else state[o.id] = '';
+    if(o.type === 'checkValue') state[o.id + '_val'] = '';
+  }
+  Object.assign(state, keep, p.state);
+
+  activePreset = id;
+  applyState();
+  update();
+  toast(`Preset applied: ${p.label}`, 'ok');
+}
+
+function updateActivePreset(){
+  $$('.preset').forEach(el => el.classList.toggle('active', el.dataset.preset === activePreset));
+}
+
+/* ==============================================================
+   10. HISTORY
+   ============================================================== */
+function loadHistory(){
+  try{ history = JSON.parse(localStorage.getItem(HIST_KEY)) || []; }
+  catch(e){ history = []; }
+}
+function saveHistory(){
+  try{ localStorage.setItem(HIST_KEY, JSON.stringify(history)); }catch(e){}
+}
+function pushHistory(cmd){
+  if(!cmd || cmd.startsWith('#')) return;
+  history = [cmd, ...history.filter(c => c !== cmd)].slice(0, 8);
+  saveHistory();
+  renderHistory();
+}
+function renderHistory(){
+  $('history').innerHTML = history.map(c =>
+    `<button class="hist-item" data-cmd="${esc(c)}" title="Click to copy">${esc(c)}</button>`
+  ).join('');
+}
+
+/* ==============================================================
+   11. TOASTS + CLIPBOARD + DOWNLOAD
+   ============================================================== */
+function toast(msg, type = ''){
+  const el = document.createElement('div');
+  el.className = 'toast ' + type;
+  el.textContent = msg;
+  $('toasts').appendChild(el);
+  setTimeout(() => {
+    el.classList.add('out');
+    setTimeout(() => el.remove(), 280);
+  }, 2600);
+}
+
+async function copyText(text){
+  try{
+    if(navigator.clipboard && window.isSecureContext){
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  }catch(e){}
+  try{
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    const ok = document.execCommand('copy');
+    ta.remove();
+    return ok;
+  }catch(e){ return false; }
+}
+
+function downloadFile(name, content, mime){
+  const blob = new Blob([content], { type: mime });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+/* ==============================================================
+   12. SCRIPT CATEGORY CHIPS
+   ============================================================== */
+function wireScriptCats(){
+  const container = $('script-cats');
+  if(!container) return;
+  container.addEventListener('click', e => {
+    const chip = e.target.closest('.script-cat');
+    if(!chip) return;
+    const cat = chip.dataset.cat;
+    chip.classList.toggle('on');
+
+    const selected = $$('.script-cat.on').map(c => c.dataset.cat);
+    const input = $('f_script');
+    if(input){
+      // Merge with any manually typed scripts
+      const existing = input.value.trim();
+      const manual = existing
+        ? existing.split(',').map(s => s.trim()).filter(s => s && !['auth','broadcast','brute','default','discovery','dos','exploit','external','fuzzer','intrusive','malware','safe','version','vuln'].includes(s))
+        : [];
+      input.value = [...manual, ...selected].join(', ');
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+  });
+}
+
+/* ==============================================================
+   13. EVENT WIRING
+   ============================================================== */
+function wireEvents(){
+
+  $('options').addEventListener('input', () => {
+    if(liveMode) update();
+    else { readState(); saveState(); updateCounts(); }
+  });
+  $('options').addEventListener('change', () => {
+    if(liveMode) update();
+    else { readState(); saveState(); updateCounts(); }
+  });
+
+  $('live').addEventListener('change', e => {
+    liveMode = e.target.checked;
+    if(liveMode) update();
+  });
+
+  /* Search filter */
+  $('search').addEventListener('input', e => {
+    const qy = e.target.value.trim().toLowerCase();
+    $$('#options details').forEach(sec => {
+      let visible = 0;
+      sec.querySelectorAll('[data-search]').forEach(el => {
+        const match = !qy || el.dataset.search.includes(qy);
+        el.classList.toggle('hidden', !match);
+        if(match) visible++;
       });
+      sec.classList.toggle('hidden', visible === 0);
+      if(qy && visible) sec.open = true;
+    });
+  });
 
-      const concurrency = $('concurrency').value;
-      if(concurrency) args.push(concurrency);
+  $('btn-expand').addEventListener('click', () => $$('#options details').forEach(d => d.open = true));
+  $('btn-collapse').addEventListener('click', () => $$('#options details').forEach(d => d.open = false));
 
-      if($('svc-detect').checked){
-        const intensity = $('version-intensity').value.trim();
-        args.push('-sV' + (intensity ? ` --version-intensity ${intensity}` : ''));
-      }
-      if($('version-all').checked) args.push('--version-all');
+  $('presets').addEventListener('click', e => {
+    const btn = e.target.closest('[data-preset]');
+    if(btn) applyPreset(btn.dataset.preset);
+  });
 
-      if($('sC').checked) args.push('-sC');
-      if($('custom-script').checked){
-        const s = $('script-args').value.trim();
-        if(s) args.push(`--script=${s}`);
-      }
-
-      const ports = $('ports').value.trim();
-      if(ports) args.push(`-p ${ports}`);
-      const tp = $('topports').value.trim(); if(tp) args.push(`--top-ports ${tp}`);
-
-      const timing = $('timing').value; if(timing) args.push(timing);
-      const retries = $('max-retries').value.trim(); if(retries) args.push(`--max-retries ${retries}`);
-
-      if($('frag').checked && !args.includes('-f')) args.push('-f');
-
-      if($('mtu').checked){
-        const mtuval = prompt('Enter MTU value (e.g. 24):');
-        if(mtuval) args.push(`--mtu ${mtuval}`);
-      }
-
-      if($('decoy').checked){
-        const dec = $('decoy-list').value.trim();
-        if(dec) args.push(`-D ${dec}`);
-      }
-
-      if($('spoof').checked){
-        const s = $('spoof-ip').value.trim();
-        if(s) args.push(`-S ${s}`);
-      }
-
-      const outFile = $('out-file').value.trim() || 'scan_result';
-      if($('out-normal').checked) args.push(`-oN ${outFile}.nmap`);
-      if($('out-xml').checked) args.push(`-oX ${outFile}.xml`);
-      if($('out-grep').checked) args.push(`-oG ${outFile}.grep`);
-      if($('out-all').checked) args.push(`-oA ${outFile}`);
-
-      if($('traceroute').checked) args.push('--traceroute');
-      if($('reason').checked) args.push('--reason');
-      if($('open-only').checked) args.push('--open');
-      if($('debug').checked) args.push('-d');
-
-      const verb = $('verbosity').value;
-      if(verb) args.unshift(verb);
-
-      const clean = args.join(' ').replace(/\s+/g,' ').trim();
-      return { target, args: clean ? clean.split(' ') : [] };
+  /* Generate */
+  $('btn-generate').addEventListener('click', () => {
+    update();
+    const res = lastResult;
+    if(res.errors.length){ toast(res.errors[0], 'err'); return; }
+    if(res.risky){
+      const ok = confirm('This command uses spoofing / evasion / idle-scan flags.\n\nConfirm you have authorisation to run it.');
+      if(!ok) return;
     }
+    toast('Command generated ✔', 'ok');
+    pushHistory(res.cmd);
+  });
 
-    function generate(){
-      const c = collectOptions();
-      if(c.error){ $('generated').textContent = '# Error: ' + c.error; return null; }
-      const cmd = `nmap ${c.args.join(' ')} ${c.target}`.replace(/\s+/g,' ').trim();
-      $('generated').textContent = cmd || '# No options selected.';
-      return cmd;
+  /* Copy */
+  $('btn-copy').addEventListener('click', async () => {
+    update();
+    const res = lastResult;
+    if(res.errors.length){ toast(res.errors[0], 'err'); return; }
+    const ok = await copyText(res.cmd);
+    if(ok){
+      toast('Copied to clipboard ✔', 'ok');
+      pushHistory(res.cmd);
+      const btn = $('btn-copy');
+      const old = btn.textContent;
+      btn.textContent = '✔ Copied';
+      btn.classList.add('ok');
+      setTimeout(() => { btn.textContent = old; btn.classList.remove('ok'); }, 1400);
+    } else {
+      toast('Copy failed — select the command manually.', 'err');
     }
+  });
 
-    $('generate').addEventListener('click', ()=>{
-      const cmd = generate();
-      if(!cmd) return;
-      if(cmd.includes('-S')){
-        const ok = confirm('You enabled spoofing (-S). Ensure you have authorization. Proceed?');
-        if(!ok) return;
-      }
-    });
+  /* Download */
+  $('btn-download').addEventListener('click', () => {
+    update();
+    const res = lastResult;
+    if(res.errors.length){ toast(res.errors[0], 'err'); return; }
+    const stamp = new Date().toISOString().slice(0, 16).replace(/[:T]/g, '-');
+    const content =
+      `#!/bin/sh\n` +
+      `# ScanCraft — generated ${new Date().toISOString()}\n` +
+      `# Review the target scope and confirm authorisation before running.\n\n` +
+      `set -e\n\n` +
+      res.cmd + `\n`;
+    downloadFile(`scancraft_${stamp}.sh`, content, 'text/x-sh');
+    toast('Script downloaded 💾', 'ok');
+    pushHistory(res.cmd);
+  });
 
-    $('copy').addEventListener('click', async ()=>{
-      const txt = $('generated').textContent;
-      if(!txt || txt.startsWith('#')){ alert('No valid command to copy.'); return; }
-      try{
-        await navigator.clipboard.writeText(txt);
-        const previous = $('copy').textContent;
-        $('copy').textContent = 'Copied!';
-        setTimeout(()=> $('copy').textContent = previous, 1500);
-      }catch(e){
-        alert('Copy failed. Please copy manually.');
-      }
-    });
+  /* History click */
+  $('history').addEventListener('click', async e => {
+    const item = e.target.closest('.hist-item');
+    if(!item) return;
+    const ok = await copyText(item.dataset.cmd);
+    toast(ok ? 'Copied from history ✔' : 'Copy failed', ok ? 'ok' : 'err');
+  });
 
-    $('btn-clear').addEventListener('click', ()=>{
-      if(!confirm('Reset all fields?')) return;
-      qAll('input[type=text]').forEach(i=>i.value='');
-      qAll('input[type=number]').forEach(i=>i.value='');
-      qAll('input[type=checkbox]').forEach(c=>c.checked=false);
-      qAll('select').forEach(s=>s.selectedIndex = 0);
-      $('generated').textContent = '# Cleared. Enter target to start.';
+  /* Reset */
+  $('btn-reset').addEventListener('click', () => {
+    if(!confirm('Reset the entire workspace? All options and history will be cleared.')) return;
+    state = {};
+    history = [];
+    activePreset = null;
+    saveHistory();
+    localStorage.removeItem(STORE_KEY);
+    $$('#options [data-id]').forEach(el => {
+      if(el.type === 'checkbox') el.checked = false;
+      else el.value = '';
     });
+    $$('.script-cat').forEach(c => c.classList.remove('on'));
+    history = [];
+    renderHistory();
+    location.hash = '';
+    update();
+    toast('Workspace reset', 'ok');
+  });
 
-    $('btn-sample').addEventListener('click', ()=>{
-      $('target').value = '192.168.1.0/24';
-      $('ports').value = '1-65535';
-      qAll('input[data-arg="-sn"]')[0].checked = true;
-      qAll('input[data-arg="-sS"]')[0].checked = true;
-      $('svc-detect').checked = true; 
-      $('sC').checked = true; 
-      $('os-detect').checked = true; 
-      $('timing').value='-T4';
-      generate();
-    });
+  /* Share */
+  $('btn-share').addEventListener('click', async () => {
+    update();
+    const hash = encodeShare(state);
+    const url = location.origin + location.pathname + '#' + hash;
+    history.replaceState(null, '', '#' + hash);
+    const ok = await copyText(url);
+    toast(ok ? 'Share link copied 🔗' : 'Could not copy link', ok ? 'ok' : 'err');
+  });
 
-    $('download').addEventListener('click', ()=>{
-      const txt = $('generated').textContent;
-      if(!txt || txt.startsWith('#')){ alert('Generate a command first.'); return; }
-      const blob = new Blob(["#!/bin/sh\n#generated by nmap cli generator\n"+txt+"\n"], {type:'text/x-sh'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href = url; a.download = 'nmap_scan.sh'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-    });
-  </script>
+  /* Theme */
+  $('btn-theme').addEventListener('click', () => {
+    const cur = document.documentElement.dataset.theme;
+    setTheme(cur === 'dark' ? 'light' : 'dark');
+  });
+
+  /* Shortcuts */
+  document.addEventListener('keydown', e => {
+    if((e.ctrlKey || e.metaKey) && e.key === 'Enter'){
+      e.preventDefault();
+      $('btn-copy').click();
+    }
+    if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k'){
+      e.preventDefault();
+      $('search').focus();
+      $('search').select();
+    }
+    if(e.key === 'Escape' && document.activeElement === $('search')){
+      $('search').value = '';
+      $('search').dispatchEvent(new Event('input'));
+      $('search').blur();
+    }
+  });
+}
+
+/* ==============================================================
+   14. THEME
+   ============================================================== */
+function setTheme(t){
+  document.documentElement.dataset.theme = t;
+  $('btn-theme').textContent = t === 'dark' ? '🌙' : '☀️';
+  try{ localStorage.setItem(THEME_KEY, t); }catch(e){}
+}
+
+/* ==============================================================
+   15. INIT
+   ============================================================== */
+(function init(){
+  let theme = 'dark';
+  try{ theme = localStorage.getItem(THEME_KEY) || 'dark'; }catch(e){}
+  setTheme(theme);
+
+  renderOptions();
+  loadState();
+  applyState();
+
+  renderPresets();
+  loadHistory();
+  renderHistory();
+
+  wireEvents();
+  wireScriptCats();
+  update();
+})();
+</script>
 </body>
 </html>
